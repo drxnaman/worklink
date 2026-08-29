@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - OTP सत्यापन (Verify OTP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+header{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.header-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.header-logo img{height:36px;width:36px;border-radius:50%;object-fit:cover}
+.header-logo span{font-size:18px;font-weight:700;color:#1a2e6e;font-family:'Noto Sans Devanagari',sans-serif}
+.lang-icon{color:#1a2e6e;text-decoration:none;font-size:18px;display:flex;align-items:center}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.04);width:100%;max-width:440px;padding:36px 28px;text-align:center}
+.icon-circle{width:64px;height:64px;background:#e0e7ff;color:#1a2e6e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 20px}
+.title{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:8px;font-family:'Noto Sans Devanagari',sans-serif}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:28px;line-height:1.5}
+.otp-container{display:flex;justify-content:space-between;gap:8px;margin-bottom:24px}
+.otp-input{width:48px;height:54px;border:1.5px solid #cbd5e1;border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:#1a2e6e;outline:none;transition:all 0.2s}
+.otp-input:focus{border-color:#1a2e6e;box-shadow:0 0 0 3px rgba(26,46,110,0.12);background:#f8fafc}
+.submit-btn{width:100%;background:#1a2e6e;color:#fff;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;font-family:'Noto Sans Devanagari',sans-serif}
+.submit-btn:hover{background:#0f1f52;box-shadow:0 4px 14px rgba(26,46,110,0.25)}
+.resend-box{margin-top:20px;font-size:13px;color:#64748b}
+.resend-link{color:#f97316;font-weight:600;text-decoration:none;cursor:pointer}
+.resend-link:hover{text-decoration:underline}
+.demo-hint{margin-top:16px;background:#f1f5f9;border:1px dashed #cbd5e1;padding:8px 12px;border-radius:8px;font-size:12px;color:#475569;font-weight:600}
+footer{padding:16px;text-align:center;font-size:12px;color:#94a3b8;border-top:1px solid #e2e8f0;background:#fff}
+</style>
+</head>
+<body>
+<header>
+  <a href="../index.html" class="header-logo">
+    <img src="../assets/logo.jpg" alt="KaamSetu"/>
+    <span>KaamSetu कामसेतु</span>
+  </a>
+  <a href="language.html" class="lang-icon" title="Change Language">🌐</a>
+</header>
+
+<main>
+  <div class="card">
+    <div class="icon-circle">🔒</div>
+    <h1 class="title" data-i18n="verifyOTP">मोबाइल नंबर सत्यापित करें</h1>
+    <p class="subtitle" id="phoneNotice">हमने <strong>+91 98XXX XXXXX</strong> पर 6-अंकों का ओटीपी भेजा है</p>
+
+    <form id="otpForm" onsubmit="verifyOtp(event)">
+      <div class="otp-container">
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]" autofocus/>
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]"/>
+      </div>
+
+      <button type="submit" class="submit-btn" id="verifyBtn">
+        <span data-i18n="verifyBtn">सत्यापित करें और आगे बढ़ें</span> ➔
+      </button>
+    </form>
+
+    <div class="demo-hint" onclick="fillDemoOtp()" style="cursor:pointer;" title="Click to auto-fill">
+      💡 डेमो OTP: <strong>123456</strong> (क्लिक करके भरें)
+    </div>
+
+    <div class="resend-box">
+      OTP नहीं मिला? <span class="resend-link" onclick="resendOtp()">पुनः भेजें (Resend)</span>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div data-i18n="tagline">काम का सेतु, विकास का पथ</div>
+</footer>
+
+<script src="../js/translations.js"></script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const roleParam = urlParams.get('role') || localStorage.getItem('kaamsetu_role') || 'worker';
+const phone = localStorage.getItem('kaamsetu_phone') || '9876543210';
+
+function formatPhone(p) {
+  if (p.length === 10) {
+    return `+91 ${p.substring(0, 2)}XXX XX${p.substring(7)}`;
+  }
+  return `+91 ${p}`;
+}
+
+const inputs = document.querySelectorAll('.otp-input');
+inputs.forEach((input, index) => {
+  input.addEventListener('input', (e) => {
+    if (e.target.value.length === 1 && index < inputs.length - 1) {
+      inputs[index + 1].focus();
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+      inputs[index - 1].focus();
+    }
+  });
+
+  input.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData('text').trim().slice(0, 6);
+    if (/^\d+$/.test(pasteData)) {
+      pasteData.split('').forEach((char, i) => {
+        if (inputs[i]) inputs[i].value = char;
+      });
+      if (pasteData.length === 6) {
+        inputs[5].focus();
+      }
+    }
+  });
+});
+
+function fillDemoOtp() {
+  '123456'.split('').forEach((digit, i) => {
+    inputs[i].value = digit;
+  });
+  inputs[5].focus();
+}
+
+function resendOtp() {
+  alert('एक नया OTP भेजा गया है: 123456');
+}
+
+function verifyOtp(e) {
+  e.preventDefault();
+  let enteredOtp = '';
+  inputs.forEach(input => enteredOtp += input.value);
+
+  if (enteredOtp.length !== 6) {
+    alert('कृपया 6 अंकों का पूरा OTP दर्ज करें।');
+    return;
+  }
+
+  // Set authentication flag
+  localStorage.setItem('kaamsetu_authenticated', 'true');
+  localStorage.setItem('kaamsetu_role', roleParam);
+
+  if (roleParam === 'employer') {
+    const isRegistered = localStorage.getItem('kaamsetu_employer_registered') === 'true';
+    window.location.href = isRegistered ? 'employer/dashboard.html' : 'employer/register.html';
+  } else {
+    const isRegistered = localStorage.getItem('kaamsetu_worker_registered') === 'true';
+    window.location.href = isRegistered ? 'worker/dashboard.html' : 'worker/register.html';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('phoneNotice').innerHTML = `हमने <strong>${formatPhone(phone)}</strong> पर 6-अंकों का ओटीपी भेजा है`;
+  applyTranslations();
+});
+</script>
+</body>
+</html>

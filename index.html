@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - काम का सेतु, विकास का पथ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Noto+Sans+Gujarati:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&family=Noto+Sans+Malayalam:wght@400;600&family=Noto+Sans+Gurmukhi:wght@400;600&family=Noto+Sans+Oriya:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#1e293b}
+nav{background:#1a2e6e;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo img{height:40px;width:40px;border-radius:50%;object-fit:cover}
+.nav-logo span{color:#fff;font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.nav-lang-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;text-decoration:none;display:flex;align-items:center;gap:6px}
+.nav-lang-btn:hover{background:rgba(255,255,255,0.25)}
+.hero{background:linear-gradient(135deg, rgba(26,46,110,0.85) 0%, rgba(15,31,82,0.9) 100%), url('assets/hero_bg.jpg') center/cover;padding:60px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:300px;height:300px;background:rgba(249,115,22,0.1);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-60px;width:400px;height:400px;background:rgba(255,255,255,0.03);border-radius:50%}
+.hero-logo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,0.3);margin-bottom:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.hero h1{color:#fff;font-size:clamp(22px,4vw,36px);font-weight:700;line-height:1.3;margin-bottom:12px;font-family:'Noto Sans Devanagari',sans-serif}
+.hero p{color:rgba(255,255,255,0.8);font-size:clamp(14px,2.5vw,18px);margin-bottom:36px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-worker{background:#fff;color:#1a2e6e;padding:16px 32px;border-radius:50px;font-size:16px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform 0.2s,box-shadow 0.2s;font-family:'Noto Sans Devanagari',sans-serif}
+.btn-employer{background:#f97316;color:#fff;padding:16px 32px;border-radius:50px;font-size:16px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(249,115,22,0.4);transition:transform 0.2s,box-shadow 0.2s;font-family:'Noto Sans Devanagari',sans-serif}
+.btn-worker:hover,.btn-employer:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.25)}
+.btn-icon{font-size:22px}
+.stats{background:#fff;padding:28px 24px;display:flex;justify-content:center;gap:0;flex-wrap:wrap;border-bottom:2px solid #f1f5f9}
+.stat-item{text-align:center;padding:12px 24px;border-right:1px solid #e2e8f0}
+.stat-item:last-child{border-right:none}
+.stat-num{font-size:26px;font-weight:800;color:#1a2e6e;font-family:'Noto Sans Devanagari',sans-serif}
+.stat-label{font-size:12px;color:#64748b;margin-top:2px;font-family:'Noto Sans Devanagari',sans-serif}
+.how-section{padding:48px 24px;text-align:center;max-width:900px;margin:0 auto}
+.section-title{font-size:clamp(20px,3vw,28px);font-weight:700;color:#1a2e6e;margin-bottom:8px;font-family:'Noto Sans Devanagari',sans-serif}
+.section-sub{color:#64748b;margin-bottom:36px;font-family:'Noto Sans Devanagari',sans-serif}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:32px}
+.step-card{background:#fff;border-radius:16px;padding:32px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.07);transition:transform 0.2s}
+.step-card:hover{transform:translateY(-4px)}
+.step-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px}
+.step-1 .step-icon{background:#e0e7ff}
+.step-2 .step-icon{background:#fef3c7}
+.step-3 .step-icon{background:#dcfce7}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#1a2e6e;color:#fff;border-radius:50%;font-size:12px;font-weight:700;margin-bottom:12px}
+.step-title{font-size:18px;font-weight:700;color:#1a2e6e;margin-bottom:8px;font-family:'Noto Sans Devanagari',sans-serif}
+.step-desc{font-size:14px;color:#64748b;line-height:1.6;font-family:'Noto Sans Devanagari',sans-serif}
+.arrow{font-size:24px;color:#cbd5e1;align-self:center;display:none}
+.trust-section{background:#1a2e6e;padding:48px 24px;text-align:center}
+.trust-title{color:#fff;font-size:clamp(18px,3vw,26px);font-weight:700;margin-bottom:8px;font-family:'Noto Sans Devanagari',sans-serif}
+.trust-sub{color:rgba(255,255,255,0.7);font-family:'Noto Sans Devanagari',sans-serif;margin-bottom:32px}
+.trust-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
+.trust-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;display:flex;align-items:center;gap:8px;font-family:'Noto Sans Devanagari',sans-serif}
+footer{background:#0f1f52;color:rgba(255,255,255,0.6);text-align:center;padding:24px;font-size:13px}
+footer a{color:rgba(255,255,255,0.6);text-decoration:none;margin:0 8px}
+footer a:hover{color:#f97316}
+.footer-links{margin-top:10px}
+@media(max-width:600px){.stat-item{padding:12px 16px;min-width:50%}.stat-item:nth-child(2){border-right:none}.steps{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="assets/logo.jpg" alt="KaamSetu Logo"/>
+    <span>KaamSetu कामसेतु</span>
+  </a>
+  <div class="nav-actions">
+    <a href="pages/language.html" class="nav-lang-btn">🌐 <span data-i18n="chooseLangSub">Language</span></a>
+  </div>
+</nav>
+
+<section class="hero">
+  <img src="assets/logo.jpg" alt="KaamSetu" class="hero-logo"/>
+  <h1 data-i18n="heroTitle">नीले कॉलर श्रमिकों के लिए भारत का सबसे बड़ा रोजगार मंच</h1>
+  <p data-i18n="heroSub">कुशल श्रमिकों और नियोक्ताओं को जोड़ने वाला विश्वसनीय डिजिटल मंच</p>
+  <div class="hero-btns">
+    <a href="pages/worker-login.html" class="btn-worker">
+      <span class="btn-icon">👷</span>
+      <div>
+        <div data-i18n="iAmWorker" style="font-size:17px">मैं श्रमिक हूं</div>
+        <div style="font-size:12px;font-weight:400;opacity:0.8" data-i18n="workerDesc">काम खोजें, आगे बढ़ें</div>
+      </div>
+    </a>
+    <a href="pages/employer-login.html" class="btn-employer">
+      <span class="btn-icon">🏢</span>
+      <div>
+        <div data-i18n="iAmEmployer" style="font-size:17px">मैं नियोक्ता हूं</div>
+        <div style="font-size:12px;font-weight:400;opacity:0.9" data-i18n="employerDesc">सही कर्मचारी खोजें</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num" data-i18n="stat1">10 लाख+</div>
+    <div class="stat-label" data-i18n="stat1Desc">पंजीकृत श्रमिक</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-i18n="stat2">50 हजार+</div>
+    <div class="stat-label" data-i18n="stat2Desc">नियोक्ता</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-i18n="stat3">5 लाख+</div>
+    <div class="stat-label" data-i18n="stat3Desc">सफल नियुक्तियां</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" data-i18n="stat4">22</div>
+    <div class="stat-label" data-i18n="stat4Desc">भाषाएं</div>
+  </div>
+</div>
+
+<div class="how-section">
+  <h2 class="section-title" data-i18n="howTitle">KaamSetu कैसे काम करता है</h2>
+  <p class="section-sub" data-i18n="howSub">तीन आसान चरणों में अपना रोजगार पाएं</p>
+  <div class="steps">
+    <div class="step-card step-1">
+      <div class="step-icon">📝</div>
+      <div class="step-num">1</div>
+      <div class="step-title" data-i18n="step1Title">पंजीकरण करें</div>
+      <div class="step-desc" data-i18n="step1Desc">अपनी भाषा में आसानी से प्रोफाइल बनाएं और डिजिटल पहचान पत्र पाएं</div>
+    </div>
+    <div class="step-card step-2">
+      <div class="step-icon">🔗</div>
+      <div class="step-num">2</div>
+      <div class="step-title" data-i18n="step2Title">जुड़ें</div>
+      <div class="step-desc" data-i18n="step2Desc">आपके कौशल और स्थान के अनुसार सही नौकरी खोजें</div>
+    </div>
+    <div class="step-card step-3">
+      <div class="step-icon">🚀</div>
+      <div class="step-num">3</div>
+      <div class="step-title" data-i18n="step3Title">आगे बढ़ें</div>
+      <div class="step-desc" data-i18n="step3Desc">काम पाएं, रेटिंग बढ़ाएं और अपना भविष्य बनाएं</div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-section">
+  <h2 class="trust-title" data-i18n="trustTitle">विश्वसनीय · सुरक्षित · सरल</h2>
+  <p class="trust-sub" data-i18n="trustSub">आधार सत्यापन द्वारा सुरक्षित डिजिटल पहचान</p>
+  <div class="trust-badges">
+    <div class="trust-badge" data-i18n="trustBadge1">✅ आधार सत्यापित</div>
+    <div class="trust-badge" data-i18n="trustBadge2">🔒 100% सुरक्षित</div>
+    <div class="trust-badge" data-i18n="trustBadge3">🌐 22 भाषाएं</div>
+    <div class="trust-badge" data-i18n="trustBadge4">📱 मोबाइल अनुकूल</div>
+    <div class="trust-badge" data-i18n="trustBadge5">⚡ तुरंत नियुक्ति</div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Noto Sans Devanagari',sans-serif" data-i18n="tagline">काम का सेतु, विकास का पथ</div>
+  <div style="margin-top:4px;font-size:12px" data-i18n="taglineSub">Connecting Work. Creating Opportunities. Enabling Growth.</div>
+  <div class="footer-links">
+    <a href="#" data-i18n="privacyPolicy">गोपनीयता नीति</a> |
+    <a href="#" data-i18n="termsOfService">सेवा की शर्तें</a> |
+    <a href="#" data-i18n="helpCenter">सहायता केंद्र</a>
+  </div>
+  <div style="margin-top:8px;font-size:12px" data-i18n="copyright">© 2026 KaamSetu. सर्वाधिकार सुरक्षित।</div>
+</footer>
+
+<script src="js/translations.js"></script>
+<script>
+// Inject missing translations dynamically so language switching works perfectly
+if(typeof TRANSLATIONS !== 'undefined') {
+  if(TRANSLATIONS.hi) {
+    TRANSLATIONS.hi.howSub = "तीन आसान चरणों में अपना रोजगार पाएं";
+    TRANSLATIONS.hi.trustTitle = "विश्वसनीय · सुरक्षित · सरल";
+    TRANSLATIONS.hi.trustSub = "आधार सत्यापन द्वारा सुरक्षित डिजिटल पहचान";
+    TRANSLATIONS.hi.trustBadge1 = "✅ आधार सत्यापित";
+    TRANSLATIONS.hi.trustBadge2 = "🔒 100% सुरक्षित";
+    TRANSLATIONS.hi.trustBadge3 = "🌐 22 भाषाएं";
+    TRANSLATIONS.hi.trustBadge4 = "📱 मोबाइल अनुकूल";
+    TRANSLATIONS.hi.trustBadge5 = "⚡ तुरंत नियुक्ति";
+    TRANSLATIONS.hi.taglineSub = "काम को जोड़ना। अवसर बनाना। विकास को सक्षम करना।";
+    TRANSLATIONS.hi.copyright = "© 2026 KaamSetu. सर्वाधिकार सुरक्षित।";
+  }
+  if(TRANSLATIONS.en) {
+    TRANSLATIONS.en.howSub = "Find employment in three easy steps";
+    TRANSLATIONS.en.trustTitle = "Trusted · Secure · Simple";
+    TRANSLATIONS.en.trustSub = "Aadhaar verified secure digital identity";
+    TRANSLATIONS.en.trustBadge1 = "✅ Aadhaar Verified";
+    TRANSLATIONS.en.trustBadge2 = "🔒 100% Secure";
+    TRANSLATIONS.en.trustBadge3 = "🌐 22 Languages";
+    TRANSLATIONS.en.trustBadge4 = "📱 Mobile Friendly";
+    TRANSLATIONS.en.trustBadge5 = "⚡ Instant Hiring";
+    TRANSLATIONS.en.taglineSub = "Connecting Work. Creating Opportunities. Enabling Growth.";
+    TRANSLATIONS.en.copyright = "© 2026 KaamSetu. All rights reserved.";
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  applyTranslations();
+});
+</script>
+</body>
+</html>

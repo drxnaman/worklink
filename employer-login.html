@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - नियोक्ता लॉगिन (Employer Login)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+header{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10}
+.header-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.header-logo img{height:36px;width:36px;border-radius:50%;object-fit:cover}
+.header-logo span{font-size:18px;font-weight:700;color:#1a2e6e;font-family:'Noto Sans Devanagari',sans-serif}
+.header-right{display:flex;align-items:center;gap:16px}
+.nav-link{color:#1a2e6e;text-decoration:none;font-size:14px;font-weight:600}
+.lang-icon{color:#1a2e6e;text-decoration:none;font-size:18px;display:flex;align-items:center;gap:4px}
+main{flex:1;display:flex;flex-direction:row-reverse;align-items:stretch;padding:0;min-height:calc(100vh - 65px)}
+.image-section{flex:1;background:linear-gradient(to left, rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('../assets/employer_bg.jpg') center/cover;display:none}
+.form-section{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#f8fafc}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.04);width:100%;max-width:440px;padding:36px 28px;text-align:center}
+.icon-circle{width:64px;height:64px;background:#fff7ed;color:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px}
+.title{font-size:24px;font-weight:700;color:#0f172a;margin-bottom:6px;font-family:'Noto Sans Devanagari',sans-serif}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:28px;line-height:1.5}
+.form-group{text-align:left;margin-bottom:20px}
+.form-label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:8px}
+.input-wrap{display:flex;align-items:center;border:1.5px solid #cbd5e1;border-radius:10px;overflow:hidden;background:#fff;transition:border-color 0.2s}
+.input-wrap:focus-within{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+.prefix{background:#f8fafc;color:#475569;font-weight:600;font-size:14px;padding:12px 14px;border-right:1px solid #cbd5e1}
+.mobile-input{width:100%;border:none;outline:none;padding:12px 14px;font-size:15px;color:#0f172a}
+.submit-btn{width:100%;background:#f97316;color:#fff;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-top:10px;font-family:'Noto Sans Devanagari',sans-serif}
+.submit-btn:hover{background:#ea580c;box-shadow:0 4px 14px rgba(249,115,22,0.25)}
+.switch-link{margin-top:20px;font-size:13px;color:#64748b}
+.switch-link a{color:#1a2e6e;font-weight:600;text-decoration:none}
+.switch-link a:hover{text-decoration:underline}
+.terms-text{margin-top:24px;font-size:11px;color:#94a3b8;line-height:1.6}
+.terms-text a{color:#64748b;text-decoration:underline}
+@media (min-width: 768px) { .image-section { display: block; } }
+</style>
+</head>
+<body>
+<header>
+  <a href="../index.html" class="header-logo">
+    <img src="../assets/logo.jpg" alt="KaamSetu"/>
+    <span>KaamSetu कामसेतु</span>
+  </a>
+  <div class="header-right">
+    <a href="worker-login.html" class="nav-link" data-i18n="workerLogin">श्रमिक लॉगिन</a>
+    <a href="language.html" class="lang-icon" title="Change Language">🌐</a>
+  </div>
+</header>
+
+<main>
+  <div class="image-section"></div>
+  <div class="form-section">
+    <div class="card">
+      <div class="icon-circle">🏢</div>
+      <h1 class="title" data-i18n="employerLogin">नियोक्ता लॉगिन</h1>
+      <p class="subtitle" data-i18n="employerLoginSub">सही लोगों से जुड़ने के लिए अपना मोबाइल नंबर दर्ज करें।</p>
+
+      <form id="employerLoginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" data-i18n="mobileNumber">मोबाइल नंबर (Mobile Number)</label>
+          <div class="input-wrap">
+            <span class="prefix">+91</span>
+            <input type="tel" id="mobile" class="mobile-input" placeholder="9876543210" maxlength="10" pattern="[0-9]{10}" required autofocus/>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span data-i18n="continue">जारी रखें (Continue)</span> ➔
+        </button>
+      </form>
+
+      <div class="switch-link">
+        <span data-i18n="switchWorkerText">श्रमिक के रूप में काम ढूंढ रहे हैं?</span> <a href="worker-login.html" data-i18n="switchWorkerLink">यहाँ लॉगिन करें</a>
+      </div>
+
+      <div class="terms-text">
+        <span data-i18n="terms1">लॉगिन करके, आप हमारी </span><a href="#" data-i18n="termsOfService">सेवा की शर्तों</a><span data-i18n="terms2"> और </span><a href="#" data-i18n="privacyPolicy">गोपनीयता नीति</a><span data-i18n="terms3"> से सहमत होते हैं।</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/translations.js"></script>
+<script>
+if(typeof TRANSLATIONS !== 'undefined') {
+  if(TRANSLATIONS.hi) {
+    TRANSLATIONS.hi.employerLoginSub = "सही लोगों से जुड़ने के लिए अपना मोबाइल नंबर दर्ज करें।";
+    TRANSLATIONS.hi.switchWorkerText = "श्रमिक के रूप में काम ढूंढ रहे हैं?";
+    TRANSLATIONS.hi.switchWorkerLink = "यहाँ लॉगिन करें";
+    TRANSLATIONS.hi.terms1 = "लॉगिन करके, आप हमारी ";
+    TRANSLATIONS.hi.terms2 = " और ";
+    TRANSLATIONS.hi.terms3 = " से सहमत होते हैं।";
+  }
+  if(TRANSLATIONS.en) {
+    TRANSLATIONS.en.employerLoginSub = "Enter your mobile number to connect with the right workers.";
+    TRANSLATIONS.en.switchWorkerText = "Looking for work as a worker?";
+    TRANSLATIONS.en.switchWorkerLink = "Login here";
+    TRANSLATIONS.en.terms1 = "By logging in, you agree to our ";
+    TRANSLATIONS.en.terms2 = " and ";
+    TRANSLATIONS.en.terms3 = ".";
+  }
+}
+function handleLogin(e) {
+  e.preventDefault();
+  const phone = document.getElementById('mobile').value.trim();
+  if (phone.length === 10) {
+    localStorage.setItem('kaamsetu_phone', phone);
+    localStorage.setItem('kaamsetu_role', 'employer');
+    window.location.href = 'verify-otp.html?role=employer';
+  } else {
+    alert('कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें।');
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>

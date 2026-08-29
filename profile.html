@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - डिजिटल पहचान पत्र (Digital Identity Card)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+main{max-width:680px;margin:20px auto;padding:0 16px}
+.id-card{background:linear-gradient(135deg,#1a2e6e 0%,#0f1f52 60%,#1e3a8a 100%);color:#fff;border-radius:20px;padding:26px;box-shadow:0 10px 30px rgba(26,46,110,0.3);position:relative;overflow:hidden;margin-bottom:20px}
+.id-card::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(249,115,22,0.18);border-radius:50%}
+.card-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:14px;margin-bottom:18px}
+.card-logo{display:flex;align-items:center;gap:8px}
+.card-logo img{width:32px;height:32px;border-radius:50%}
+.card-logo-text{font-size:15px;font-weight:700;letter-spacing:0.5px}
+.emblem{font-size:20px}
+.card-main{display:flex;gap:18px;align-items:center;margin-bottom:18px}
+.avatar{width:76px;height:76px;border-radius:50%;background:#f97316;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.worker-details h2{font-size:22px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.worker-role{font-size:14px;opacity:0.9;margin-top:2px}
+.verified-chip{display:inline-flex;align-items:center;gap:4px;background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;margin-top:6px}
+.card-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;background:rgba(255,255,255,0.08);backdrop-filter:blur(4px);padding:12px 16px;border-radius:12px;margin-bottom:16px;font-size:12px}
+.meta-item strong{display:block;color:#f97316;font-size:14px;font-weight:700}
+.meta-item span{opacity:0.75}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.15);padding-top:14px}
+.qr-box{width:60px;height:60px;background:#fff;border-radius:8px;padding:4px;display:flex;align-items:center;justify-content:center}
+.qr-pattern{width:100%;height:100%;background-image:radial-gradient(#1a2e6e 2px, transparent 2px);background-size:6px 6px;border:1px solid #e2e8f0}
+.card-id-num{font-size:11px;opacity:0.75;font-family:monospace}
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.btn-action{background:#fff;border:1.5px solid #cbd5e1;padding:12px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;color:#1a2e6e;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.btn-action:hover{border-color:#1a2e6e;background:#f8fafc}
+.section-box{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+.sec-title{font-size:16px;font-weight:700;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.skill-badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{background:#ffedd5;color:#c2410c;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700}
+.history-item{border-left:3px solid #1a2e6e;padding-left:14px;margin-bottom:16px;position:relative}
+.history-item:last-child{margin-bottom:0}
+.history-title{font-size:14px;font-weight:700;color:#0f172a}
+.history-meta{font-size:12px;color:#64748b;margin-top:2px}
+.history-rating{font-size:12px;color:#eab308;margin-top:4px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#1a2e6e}
+.nav-item-icon{font-size:20px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:600;display:none;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="dashboard.html" class="back-btn">⬅</a>
+    <span class="header-title" data-i18n="myProfile">डिजिटल पहचान पत्र</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<main>
+  <div class="id-card" id="digitalIdCard">
+    <div class="card-top">
+      <div class="card-logo">
+        <img src="../../assets/logo.jpg" alt="Logo"/>
+        <span class="card-logo-text">KaamSetu Digital ID</span>
+      </div>
+      <span class="emblem">🇮🇳</span>
+    </div>
+
+    <div class="card-main">
+      <div class="avatar" id="profileAvatar">RK</div>
+      <div class="worker-details">
+        <h2 id="profileName">राम कुमार</h2>
+        <div class="worker-role" id="profileRole">⚡ इलेक्ट्रीशियन (Electrician)</div>
+        <div class="verified-chip">✓ आधार सत्यापित</div>
+      </div>
+    </div>
+
+    <div class="card-meta">
+      <div class="meta-item">
+        <span data-i18n="trustScore">विश्वास स्कोर (Trust Score)</span>
+        <strong>85 / 100 (उत्कृष्ट)</strong>
+      </div>
+      <div class="meta-item">
+        <span>कार्य अनुभव (Experience)</span>
+        <strong>5 वर्ष (5 Years)</strong>
+      </div>
+      <div class="meta-item">
+        <span>मूल स्थान (Location)</span>
+        <strong id="profileLocation">दिल्ली, NCR</strong>
+      </div>
+      <div class="meta-item">
+        <span>रेटिंग (Rating)</span>
+        <strong>⭐ 4.8 / 5.0 (14 समीक्षाएं)</strong>
+      </div>
+    </div>
+
+    <div class="card-bottom">
+      <div>
+        <div class="card-id-num">ID: KS-2026-DL-8842</div>
+        <div style="font-size:10px;opacity:0.7">जारी तिथि: अगस्त 2026</div>
+      </div>
+      <div class="qr-box" title="Scan to verify worker profile">
+        <div class="qr-pattern"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-grid">
+    <button class="btn-action" onclick="downloadCard()">⬇️ कार्ड डाउनलोड</button>
+    <button class="btn-action" onclick="shareProfile()">📤 साझा करें (Share)</button>
+    <a href="register.html" class="btn-action">✏️ संपादित करें (Edit)</a>
+  </div>
+
+  <div class="section-box">
+    <div class="sec-title"><span>🛠️</span> <span data-i18n="skillsInfo">प्रमाणित कौशल (Verified Skills)</span></div>
+    <div class="skill-badges">
+      <span class="badge">⚡ इलेक्ट्रीशियन</span>
+      <span class="badge">🏠 घरेलू वायरिंग</span>
+      <span class="badge">🏭 औद्योगिक पैनल</span>
+      <span class="badge">🔧 बेसिक प्लंबिंग</span>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <div class="sec-title"><span>📜</span> <span data-i18n="workHistory">कार्य इतिहास एवं नियोक्ता रेटिंग</span></div>
+    <div class="history-item">
+      <div class="history-title">शर्मा इंफ्रा - कमर्शियल वायरिंग प्रोजेक्ट</div>
+      <div class="history-meta">अवधि: 6 माह (2025) • दिल्ली</div>
+      <div class="history-rating">⭐⭐⭐⭐⭐ 5.0 — "समयनिष्ठ एवं अत्यंत कुशल कामगार।"</div>
+    </div>
+    <div class="history-item">
+      <div class="history-title">रॉयल रेजिडेंसी - मेंटेनेंस इलेक्ट्रीशियन</div>
+      <div class="history-meta">अवधि: 1 वर्ष (2024) • नोएडा</div>
+      <div class="history-rating">⭐⭐⭐⭐☆ 4.6 — "विश्वसनीय एवं सुरक्षित काम।"</div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toastMsg">लिंक कॉपी हो गया! ✓</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">
+    <span class="nav-item-icon">🏠</span>
+    <span>होम</span>
+  </a>
+  <a href="jobs.html" class="nav-item">
+    <span class="nav-item-icon">🔍</span>
+    <span>काम खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item">
+    <span class="nav-item-icon">📋</span>
+    <span>आवेदन</span>
+  </a>
+  <a href="profile.html" class="nav-item active">
+    <span class="nav-item-icon">👤</span>
+    <span>प्रोफाइल ID</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toastMsg');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function downloadCard() {
+  showToast('डिजिटल पहचान पत्र (PDF) डाउनलोड हो रहा है...');
+}
+
+function shareProfile() {
+  navigator.clipboard ? navigator.clipboard.writeText(window.location.href) : null;
+  showToast('प्रोफाइल लिंक कॉपी हो गया! इसे WhatsApp पर साझा करें।');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('kaamsetu_worker_data');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.name) {
+        document.getElementById('profileName').innerText = data.name;
+        document.getElementById('profileAvatar').innerText = data.name.substring(0, 2);
+      }
+      if (data.city) {
+        document.getElementById('profileLocation').innerText = `${data.city}, ${data.state || ''}`;
+      }
+    } catch(e){}
+  }
+  applyTranslations();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - नौकरी पोस्ट करें (Post a Job)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+main{max-width:700px;margin:20px auto;padding:0 16px}
+.form-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.04);padding:28px 24px;margin-bottom:20px}
+.card-title{font-size:20px;font-weight:700;color:#1a2e6e;margin-bottom:6px;font-family:'Noto Sans Devanagari',sans-serif}
+.card-desc{font-size:13px;color:#64748b;margin-bottom:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.full-col{grid-column:1 / -1}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px}
+.input-ctrl{width:100%;padding:12px 14px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:14px;outline:none;font-family:inherit;background:#fff}
+.input-ctrl:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.1)}
+.salary-row{display:flex;gap:12px}
+.post-btn{width:100%;background:#f97316;color:#fff;border:none;padding:16px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(249,115,22,0.3);transition:all 0.2s}
+.post-btn:hover{background:#ea580c;transform:translateY(-1px)}
+.preview-box{background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:12px;padding:18px;margin-top:20px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#f97316}
+.nav-item-icon{font-size:20px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="dashboard.html" class="back-btn">⬅</a>
+    <span class="header-title" data-i18n="postJob">नौकरी पोस्ट करें</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<main>
+  <div class="form-card">
+    <h2 class="card-title">नई नौकरी का विवरण (Job Details)</h2>
+    <p class="card-desc">कुशल श्रमिकों से तुरंत जुड़ने के लिए नीचे दी गई जानकारी भरें।</p>
+
+    <form id="jobPostForm" onsubmit="handlePostJob(event)">
+      <div class="form-grid">
+        <div class="form-group full-col">
+          <label class="form-label" data-i18n="jobTitle">काम / पद का नाम (Job Title) *</label>
+          <input type="text" id="jobTitle" class="input-ctrl" placeholder="उदा. कमर्शियल इलेक्ट्रीशियन (Wiring & Panel)" required value="कमर्शियल इलेक्ट्रीशियन" oninput="updateLivePreview()"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">कौशल श्रेणी (Skill Category) *</label>
+          <select id="jobSkill" class="input-ctrl" onchange="updateLivePreview()">
+            <option value="electrician" selected>⚡ इलेक्ट्रीशियन (Electrician)</option>
+            <option value="plumber">🔧 प्लंबर (Plumber)</option>
+            <option value="carpenter">🪚 बढ़ई (Carpenter)</option>
+            <option value="mason">🧱 राजमिस्त्री (Mason)</option>
+            <option value="driver">🚗 ड्राइवर (Driver)</option>
+            <option value="welder">🔩 वेल्डर (Welder)</option>
+            <option value="cook">🍳 रसोइया (Cook)</option>
+            <option value="security">🔒 सुरक्षा गार्ड (Security)</option>
+            <option value="domestic">🏠 घरेलू सहायिका (Domestic)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="workersNeeded">आवश्यक कामगार संख्या *</label>
+          <input type="number" id="workersCount" class="input-ctrl" min="1" max="100" value="4" required/>
+        </div>
+
+        <div class="form-group full-col">
+          <label class="form-label">वेतन (Salary Rate) *</label>
+          <div class="salary-row">
+            <input type="number" id="salaryAmount" class="input-ctrl" placeholder="850" value="850" required style="flex:2" oninput="updateLivePreview()"/>
+            <select id="salaryType" class="input-ctrl" style="flex:1" onchange="updateLivePreview()">
+              <option value="day" selected>प्रति दिन (Per Day)</option>
+              <option value="month">प्रति माह (Per Month)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">कार्य स्थल (Work Location / City) *</label>
+          <input type="text" id="jobLocation" class="input-ctrl" placeholder="उदा. ओखला, नई दिल्ली" value="ओखला, नई दिल्ली" required oninput="updateLivePreview()"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">कार्य अवधि (Duration) *</label>
+          <select id="jobDuration" class="input-ctrl">
+            <option value="15days">15 दिन प्रोजेक्ट</option>
+            <option value="1month" selected>1 माह प्रोजेक्ट</option>
+            <option value="3months">3 माह प्रोजेक्ट</option>
+            <option value="permanent">स्थायी / पूर्णकालिक</option>
+          </select>
+        </div>
+
+        <div class="form-group full-col">
+          <label class="form-label" data-i18n="jobDesc">कार्य विवरण एवं सुविधाएं (Job Description) *</label>
+          <textarea id="jobDesc" class="input-ctrl" rows="3" placeholder="उदा. कमर्शियल बिल्डिंग में पाइप वायरिंग और डिस्ट्रीब्यूशन बॉक्स फिटिंग का काम है। चाय और भोजन उपलब्ध।">कमर्शियल प्रोजेक्ट में पैनल फिटिंग एवं वायरिंग का कार्य है। साइट पर भोजन एवं प्राथमिक सुरक्षा उपकरण उपलब्ध कराए जाएंगे।</textarea>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <div style="font-size:12px;color:#64748b;font-weight:700;margin-bottom:8px">📱 लाइव पूर्वावलोकन (श्रमिकों को ऐसा दिखेगा):</div>
+        <div style="font-size:16px;font-weight:700;color:#0f172a" id="prevJobTitle">⚡ कमर्शियल इलेक्ट्रीशियन</div>
+        <div style="font-size:13px;color:#475569;margin-top:2px">🏢 शर्मा इंफ्रा प्रोजेक्ट्स • <span id="prevJobLoc">ओखला, नई दिल्ली</span></div>
+        <div style="font-size:15px;font-weight:800;color:#16a34a;margin-top:8px" id="prevJobSalary">₹850 / दिन</div>
+      </div>
+
+      <div style="margin-top:24px">
+        <button type="submit" class="post-btn">
+          <span>🚀</span> <span data-i18n="publishJob">काम प्रकाशित करें (Publish Job)</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">
+    <span class="nav-item-icon">🏠</span>
+    <span>डैशबोर्ड</span>
+  </a>
+  <a href="post-job.html" class="nav-item active">
+    <span class="nav-item-icon">➕</span>
+    <span>काम पोस्ट करें</span>
+  </a>
+  <a href="find-workers.html" class="nav-item">
+    <span class="nav-item-icon">🔍</span>
+    <span>कामगार खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item">
+    <span class="nav-item-icon">📊</span>
+    <span>कैंडिडेट्स</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+function updateLivePreview() {
+  document.getElementById('prevJobTitle').innerText = document.getElementById('jobTitle').value || 'नौकरी का नाम';
+  document.getElementById('prevJobLoc').innerText = document.getElementById('jobLocation').value || 'स्थान';
+  const type = document.getElementById('salaryType').value === 'day' ? '/ दिन' : '/ माह';
+  document.getElementById('prevJobSalary').innerText = `₹${document.getElementById('salaryAmount').value || '0'} ${type}`;
+}
+
+function handlePostJob(e) {
+  e.preventDefault();
+  alert('🎉 आपकी नौकरी सफलतापूर्वक पोस्ट हो गई है! आस-पास के 120+ सत्यापित इलेक्ट्रीशियन को नोटिफिकेशन भेज दिया गया है।');
+  window.location.href = 'dashboard.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>

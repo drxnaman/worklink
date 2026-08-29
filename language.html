@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - भाषा चुनें</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&family=Noto+Sans+Gujarati:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&family=Noto+Sans+Malayalam:wght@400;600&family=Noto+Sans+Gurmukhi:wght@400;600&family=Noto+Sans+Oriya:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh;display:flex;flex-direction:column}
+header{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;justify-content:center}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-logo img{height:36px;width:36px;border-radius:50%;object-fit:cover}
+.header-logo span{font-size:18px;font-weight:700;color:#1a2e6e;font-family:'Noto Sans Devanagari',sans-serif}
+main{flex:1;max-width:1000px;width:100%;margin:0 auto;padding:32px 20px}
+.page-title{font-size:clamp(26px,5vw,38px);font-weight:700;color:#1a2e6e;text-align:center;font-family:'Noto Sans Devanagari',sans-serif;margin-bottom:6px}
+.page-sub{text-align:center;color:#475569;font-size:15px;margin-bottom:4px}
+.page-desc{text-align:center;color:#64748b;font-size:13px;margin-bottom:32px;font-family:'Noto Sans Devanagari',sans-serif;line-height:1.6;max-width:580px;margin-left:auto;margin-right:auto}
+.lang-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:32px}
+.lang-card{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:16px 10px;text-align:center;cursor:pointer;transition:all 0.2s;user-select:none}
+.lang-card:hover{border-color:#1a2e6e;background:#f0f4ff;transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,46,110,0.12)}
+.lang-card.selected{border-color:#1a2e6e;background:#eef2ff;box-shadow:0 0 0 2px rgba(26,46,110,0.15)}
+.lang-card .lang-name{font-size:18px;font-weight:700;color:#1a2e6e;display:block;margin-bottom:4px;line-height:1.3}
+.lang-card .lang-sub{font-size:11px;color:#64748b}
+.lang-card.selected .lang-name{color:#1a2e6e}
+.continue-wrap{text-align:center}
+.continue-btn{background:#1a2e6e;color:#fff;border:none;padding:16px 48px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Noto Sans Devanagari',sans-serif;display:inline-flex;align-items:center;gap:8px}
+.continue-btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.continue-btn:not(:disabled):hover{background:#0f1f52;transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,46,110,0.3)}
+footer{background:#fff;border-top:1px solid #e2e8f0;padding:16px 24px;text-align:center;font-size:12px;color:#64748b}
+footer a{color:#64748b;text-decoration:none;margin:0 8px}
+footer a:hover{color:#1a2e6e}
+.footer-tagline{font-family:'Noto Sans Devanagari',sans-serif;margin-bottom:6px}
+@media(max-width:700px){.lang-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:400px){.lang-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-logo">
+    <img src="../assets/logo.jpg" alt="KaamSetu Logo"/>
+    <span>KaamSetu कामसेतु</span>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title" data-i18n="chooseLang">अपनी भाषा चुनें</h1>
+  <p class="page-sub" data-i18n="chooseLangSub">Choose your preferred language</p>
+  <p class="page-desc" data-i18n="chooseLangDesc">अपनी पसंदीदा भाषा चुनें और KaamSetu की यात्रा शुरू करें। / Choose your preferred language and start your KaamSetu journey.</p>
+
+  <div class="lang-grid" id="langGrid"></div>
+
+  <div class="continue-wrap">
+    <button class="continue-btn" id="continueBtn" disabled onclick="doNext()">
+      <span data-i18n="continueBtn">Continue / आगे बढ़ें →</span>
+    </button>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-tagline" data-i18n="taglineAndSub">काम का सेतु, विकास का पथ | Connecting Work. Creating Opportunities. Enabling Growth.</div>
+  <div>
+    <a href="#" data-i18n="privacyPolicy">Privacy Policy</a> |
+    <a href="#" data-i18n="termsOfService">Terms of Service</a> |
+    <a href="#" data-i18n="helpCenter">Help Center</a>
+  </div>
+</footer>
+
+<script src="../js/translations.js"></script>
+<script>
+if(typeof TRANSLATIONS !== 'undefined') {
+  if(TRANSLATIONS.hi) {
+    TRANSLATIONS.hi.taglineAndSub = "काम का सेतु, विकास का पथ | Connecting Work. Creating Opportunities. Enabling Growth.";
+    TRANSLATIONS.hi.continueBtn = "आगे बढ़ें (Continue) →";
+  }
+  if(TRANSLATIONS.en) {
+    TRANSLATIONS.en.taglineAndSub = "Connecting Work. Creating Opportunities. Enabling Growth.";
+    TRANSLATIONS.en.continueBtn = "Continue →";
+  }
+}
+let selectedLang = null;
+
+function buildGrid() {
+  const grid = document.getElementById('langGrid');
+  grid.innerHTML = '';
+  ALL_LANGUAGES.forEach(lang => {
+    const card = document.createElement('div');
+    card.className = 'lang-card' + (lang.code === currentLang ? ' selected' : '');
+    card.dataset.code = lang.code;
+    card.innerHTML = `<span class="lang-name">${lang.name}</span><span class="lang-sub">${lang.sub}</span>`;
+    card.addEventListener('click', () => selectLang(lang.code));
+    grid.appendChild(card);
+    if (lang.code === currentLang) selectedLang = lang.code;
+  });
+  updateBtn();
+}
+
+function selectLang(code) {
+  selectedLang = code;
+  document.querySelectorAll('.lang-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.code === code);
+  });
+  setLanguage(code);
+  applyTranslations();
+  updateBtn();
+}
+
+function updateBtn() {
+  document.getElementById('continueBtn').disabled = !selectedLang;
+}
+
+function doNext() {
+  if (!selectedLang) return;
+  setLanguage(selectedLang);
+  const role = localStorage.getItem('kaamsetu_role') || 'worker';
+  if (role === 'employer') {
+    window.location.href = 'employer-login.html';
+  } else {
+    window.location.href = 'worker-login.html';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  selectedLang = currentLang;
+  buildGrid();
+  applyTranslations();
+});
+</script>
+</body>
+</html>

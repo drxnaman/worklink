@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - काम खोजें (Find Jobs)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.search-container{background:#1a2e6e;padding:0 16px 16px 16px}
+.search-box{background:#fff;border-radius:12px;display:flex;align-items:center;padding:10px 14px;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.search-box input{border:none;outline:none;width:100%;font-size:14px;font-family:inherit}
+.filter-scroll{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;background:#fff;border-bottom:1px solid #e2e8f0;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:8px 16px;border-radius:20px;border:1px solid #cbd5e1;background:#f8fafc;font-size:13px;font-weight:600;color:#475569;cursor:pointer;transition:all 0.2s}
+.chip.active{background:#1a2e6e;color:#fff;border-color:#1a2e6e}
+main{max-width:800px;margin:0 auto;padding:16px}
+.jobs-count{font-size:13px;color:#64748b;margin-bottom:12px;font-weight:600}
+.jobs-list{display:flex;flex-direction:column;gap:12px}
+.job-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.03);transition:all 0.2s}
+.job-card:hover{border-color:#1a2e6e;transform:translateY(-2px);box-shadow:0 4px 14px rgba(26,46,110,0.08)}
+.job-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.job-title{font-size:16px;font-weight:700;color:#0f172a}
+.job-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:#eef2ff;color:#1a2e6e}
+.job-company{font-size:13px;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.job-tags{display:flex;gap:12px;font-size:12px;color:#64748b;margin-bottom:14px;flex-wrap:wrap}
+.job-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9;padding-top:12px}
+.job-salary{font-size:16px;font-weight:800;color:#16a34a}
+.apply-btn{background:#1a2e6e;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.apply-btn:hover{background:#0f1f52}
+.apply-btn.applied{background:#22c55e;cursor:default}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#1a2e6e}
+.nav-item-icon{font-size:20px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:600;display:none;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="dashboard.html" class="back-btn">⬅</a>
+    <span class="header-title" data-i18n="findJobs">काम खोजें</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<div class="search-container">
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" id="searchInput" placeholder="कौशल, पद या शहर खोजें (उदा. इलेक्ट्रीशियन, दिल्ली)..." oninput="filterJobs()"/>
+  </div>
+</div>
+
+<div class="filter-scroll">
+  <div class="chip active" onclick="setCategory(this, 'all')">सभी (All)</div>
+  <div class="chip" onclick="setCategory(this, 'electrician')">⚡ इलेक्ट्रीशियन</div>
+  <div class="chip" onclick="setCategory(this, 'plumber')">🔧 प्लंबर</div>
+  <div class="chip" onclick="setCategory(this, 'carpenter')">🪚 बढ़ई</div>
+  <div class="chip" onclick="setCategory(this, 'driver')">🚗 ड्राइवर</div>
+  <div class="chip" onclick="setCategory(this, 'mason')">🧱 राजमिस्त्री</div>
+  <div class="chip" onclick="setCategory(this, 'cook')">🍳 रसोइया</div>
+  <div class="chip" onclick="setCategory(this, 'security')">🔒 सुरक्षा गार्ड</div>
+  <div class="chip" onclick="setCategory(this, 'welder')">🔩 वेल्डर</div>
+</div>
+
+<main>
+  <div class="jobs-count" id="jobsCount">8 नौकरियां उपलब्ध</div>
+
+  <div class="jobs-list" id="jobsList">
+    <!-- Card 1 -->
+    <div class="job-card" data-category="electrician" data-text="इलेक्ट्रीशियन दिल्ली निर्माण sharma wiring">
+      <div class="job-header">
+        <div>
+          <div class="job-title">⚡ कमर्शियल इलेक्ट्रीशियन (Wiring)</div>
+          <div class="job-company">🏢 शर्मा इंफ्रा प्रोजेक्ट्स</div>
+        </div>
+        <span class="job-badge">तुरंत आवश्यकता</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 दिल्ली (ओखला)</span>
+        <span>⏱️ 2 माह अनुबंध</span>
+        <span>⚡ 3+ वर्ष अनुभव</span>
+        <span>🏠 भोजन + रहना उपलब्ध</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹850 / दिन</div>
+        <button class="apply-btn" onclick="apply(this, 'कमर्शियल इलेक्ट्रीशियन')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="job-card" data-category="plumber" data-text="प्लंबर मुंबई metro pipe housing">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🔧 आवासीय पाइप फिटिंग एवं प्लंबिंग</div>
+          <div class="job-company">🏢 मेट्रो हाउसिंग डेवलपर्स</div>
+        </div>
+        <span class="job-badge" style="background:#fef3c7;color:#d97706">सत्यापित</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 मुंबई (अंधेरी)</span>
+        <span>⏱️ पूर्णकालिक</span>
+        <span>🔧 2 वर्ष अनुभव</span>
+        <span>🛡️ दुर्घटना बीमा</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹24,000 / माह</div>
+        <button class="apply-btn" onclick="apply(this, 'प्लंबिंग विशेषज्ञ')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="job-card" data-category="driver" data-text="ड्राइवर बैंगलोर logistics delivery">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🚗 कमर्शियल व्हीकल ड्राइवर (LMV)</div>
+          <div class="job-company">🏢 फास्ट डिलीवरी लॉजिस्टिक्स</div>
+        </div>
+        <span class="job-badge">साप्ताहिक भुगतान</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 बेंगलुरु, कर्नाटक</span>
+        <span>⏱️ 6 माह अनुबंध</span>
+        <span>🚗 वैध DL आवश्यक</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹750 / दिन</div>
+        <button class="apply-btn" onclick="apply(this, 'कमर्शियल ड्राइवर')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="job-card" data-category="carpenter" data-text="बढ़ई पुणे furniture modular wood">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🪚 मॉड्यूलर किचन एवं फर्नीचर बढ़ई</div>
+          <div class="job-company">🏢 वुडक्राफ्ट इंटीरियर्स</div>
+        </div>
+        <span class="job-badge">प्रोत्साहन बोनस</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 पुणे, महाराष्ट्र</span>
+        <span>⏱️ पूर्णकालिक</span>
+        <span>🪚 आधुनिक मशीन ज्ञान</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹900 / दिन</div>
+        <button class="apply-btn" onclick="apply(this, 'फर्नीचर बढ़ई')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="job-card" data-category="mason" data-text="राजमिस्त्री नोएडा construction tile marble">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🧱 राजमिस्त्री (टाइल एवं प्लास्टर)</div>
+          <div class="job-company">🏢 बिल्डरकॉन रियल्टी</div>
+        </div>
+        <span class="job-badge">तुरंत ज्वाइनिंग</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 नोएडा, उत्तर प्रदेश</span>
+        <span>⏱️ 3 माह प्रोजेक्ट</span>
+        <span>🧱 4+ वर्ष अनुभव</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹800 / दिन</div>
+        <button class="apply-btn" onclick="apply(this, 'राजमिस्त्री')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="job-card" data-category="cook" data-text="रसोइया जयपुर hotel chef food">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🍳 उत्तर भारतीय रसोइया (Cook)</div>
+          <div class="job-company">🏢 होटल रॉयल सनराइज</div>
+        </div>
+        <span class="job-badge" style="background:#fef3c7;color:#d97706">रहना + खाना मुफ्त</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 जयपुर, राजस्थान</span>
+        <span>⏱️ स्थायी पद</span>
+        <span>🍳 शाकाहारी एवं मिष्ठान्न</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹18,000 / माह</div>
+        <button class="apply-btn" onclick="apply(this, 'रसोइया')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="job-card" data-category="security" data-text="सुरक्षा गार्ड हैदराबाद security guard">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🔒 सुरक्षा गार्ड (12 घंटे शिफ्ट)</div>
+          <div class="job-company">🏢 सिक्योरइंडिया सर्विसेज</div>
+        </div>
+        <span class="job-badge">यूनिफॉर्म उपलब्ध</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 हैदराबाद, तेलंगाना</span>
+        <span>⏱️ वार्षिक अनुबंध</span>
+        <span>🔒 10वीं पास आवश्यक</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹16,500 / माह</div>
+        <button class="apply-btn" onclick="apply(this, 'सुरक्षा गार्ड')">आवेदन करें</button>
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="job-card" data-category="welder" data-text="वेल्डर अहमदाबाद steel fabrication mig tig">
+      <div class="job-header">
+        <div>
+          <div class="job-title">🔩 MIG / TIG वेल्डर</div>
+          <div class="job-company">🏢 गुजरात स्टील फैब्रिकेशन</div>
+        </div>
+        <span class="job-badge">ओवरटाइम अतिरिक्त</span>
+      </div>
+      <div class="job-tags">
+        <span>📍 अहमदाबाद, गुजरात</span>
+        <span>⏱️ पूर्णकालिक</span>
+        <span>🔩 आईटीआई प्रमाणपत्र धारक</span>
+      </div>
+      <div class="job-footer">
+        <div class="job-salary">₹950 / दिन</div>
+        <button class="apply-btn" onclick="apply(this, 'MIG वेल्डर')">आवेदन करें</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toastMsg">आवेदन सफलतापूर्वक भेजा गया! ✓</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">
+    <span class="nav-item-icon">🏠</span>
+    <span>होम</span>
+  </a>
+  <a href="jobs.html" class="nav-item active">
+    <span class="nav-item-icon">🔍</span>
+    <span>काम खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item">
+    <span class="nav-item-icon">📋</span>
+    <span>आवेदन</span>
+  </a>
+  <a href="profile.html" class="nav-item">
+    <span class="nav-item-icon">👤</span>
+    <span>प्रोफाइल ID</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+let currentCat = 'all';
+
+function setCategory(el, cat) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentCat = cat;
+  filterJobs();
+}
+
+function filterJobs() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.job-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const matchesCat = (currentCat === 'all') || (card.dataset.category === currentCat);
+    const matchesQuery = !query || card.dataset.text.toLowerCase().includes(query) || card.innerText.toLowerCase().includes(query);
+
+    if (matchesCat && matchesQuery) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  document.getElementById('jobsCount').innerText = `${visibleCount} नौकरियां उपलब्ध`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toastMsg');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function apply(btn, title) {
+  if (btn.classList.contains('applied')) return;
+  btn.classList.add('applied');
+  btn.innerText = 'आवेदित ✓';
+  showToast(`"${title}" के लिए आपका आवेदन नियोक्ता तक पहुंच गया!`);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>

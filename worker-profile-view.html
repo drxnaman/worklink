@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - कामगार प्रोफाइल विवरण (Worker Profile View)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:90px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+main{max-width:680px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.04);padding:24px;margin-bottom:16px}
+.profile-top{display:flex;gap:18px;align-items:center;margin-bottom:20px}
+.avatar{width:76px;height:76px;border-radius:50%;background:#1a2e6e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;flex-shrink:0}
+.name{font-size:22px;font-weight:700;color:#0f172a}
+.skill{font-size:14px;color:#475569;margin-top:2px}
+.verified{display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;margin-top:6px}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:20px;text-align:center}
+.meta-item strong{display:block;font-size:16px;color:#1a2e6e;font-weight:800}
+.meta-item span{font-size:11px;color:#64748b}
+.sec-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.badge-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.badge{background:#eef2ff;color:#1a2e6e;font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px}
+.review-box{background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.review-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.sticky-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;padding:14px 20px;display:flex;justify-content:center;gap:12px;z-index:100;box-shadow:0 -4px 15px rgba(0,0,0,0.06)}
+.btn-footer{padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-call{background:#16a34a;color:#fff}
+.btn-shortlist{background:#f97316;color:#fff}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="javascript:history.back()" class="back-btn">⬅</a>
+    <span class="header-title">श्रमिक डिजिटल प्रोफाइल</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<main>
+  <div class="card">
+    <div class="profile-top">
+      <div class="avatar" id="wAvatar">RK</div>
+      <div>
+        <h1 class="name" id="wName">राम कुमार</h1>
+        <div class="skill" id="wRole">⚡ इलेक्ट्रीशियन (Electrician)</div>
+        <div class="verified">✓ आधार सत्यापित (Aadhaar Verified)</div>
+      </div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong id="wScore" style="color:#16a34a">85 / 100</strong>
+        <span>विश्वास स्कोर (Trust)</span>
+      </div>
+      <div class="meta-item">
+        <strong id="wExp">5 वर्ष</strong>
+        <span>अनुभव (Experience)</span>
+      </div>
+      <div class="meta-item">
+        <strong id="wCity">दिल्ली</strong>
+        <span>स्थान (Location)</span>
+      </div>
+    </div>
+
+    <div class="sec-title"><span>🛠️</span> प्रमाणित कौशल (Skills)</div>
+    <div class="badge-list">
+      <span class="badge" id="mainSkillBadge">⚡ इलेक्ट्रीशियन</span>
+      <span class="badge">घरेलू वायरिंग</span>
+      <span class="badge">पैनल फिटिंग</span>
+      <span class="badge">सुरक्षा मानक</span>
+    </div>
+
+    <div class="sec-title"><span>📜</span> कार्य इतिहास एवं पिछले नियोक्ताओं की समीक्षा</div>
+    <div class="review-box">
+      <div class="review-header">
+        <strong>शर्मा इंफ्रा प्रोजेक्ट्स (दिल्ली)</strong>
+        <span style="color:#eab308">⭐⭐⭐⭐⭐ 5.0</span>
+      </div>
+      <p style="font-size:12px;color:#475569">"समय के पाबंद, बहुत ही व्यवस्थित और सुरक्षित कार्यशैली।"</p>
+    </div>
+
+    <div class="review-box">
+      <div class="review-header">
+        <strong>रॉयल रेजिडेंसी (नोएडा)</strong>
+        <span style="color:#eab308">⭐⭐⭐⭐☆ 4.6</span>
+      </div>
+      <p style="font-size:12px;color:#475569">"ईमानदार और भरोसेमंद कामगार।"</p>
+    </div>
+  </div>
+</main>
+
+<div class="sticky-footer">
+  <button class="btn-footer btn-call" onclick="alert('कॉल शुरू की जा रही है: +91 9876543210')">📞 तुरंत कॉल करें</button>
+  <button class="btn-footer btn-shortlist" onclick="alert('कैंडिडेट को शॉर्टलिस्ट कर लिया गया है!')">⭐ शॉर्टलिस्ट करें</button>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('name') || 'राम कुमार';
+  const skill = params.get('skill') || 'इलेक्ट्रीशियन';
+  const city = params.get('city') || 'दिल्ली';
+  const exp = params.get('exp') || '5';
+  const score = params.get('score') || '85';
+
+  document.getElementById('wName').innerText = name;
+  document.getElementById('wAvatar').innerText = name.substring(0, 2);
+  document.getElementById('wRole').innerText = `⚡ ${skill}`;
+  document.getElementById('mainSkillBadge').innerText = `⚡ ${skill}`;
+  document.getElementById('wCity').innerText = city;
+  document.getElementById('wExp').innerText = `${exp} वर्ष`;
+  document.getElementById('wScore').innerText = `${score} / 100`;
+
+  applyTranslations();
+});
+</script>
+</body>
+</html>

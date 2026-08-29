@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - श्रमिक पंजीकरण (Worker Registration)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh;display:flex;flex-direction:column}
+header{background:#1a2e6e;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.header-logo img{height:36px;width:36px;border-radius:50%;object-fit:cover}
+.header-logo span{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.lang-btn{background:rgba(255,255,255,0.15);color:#fff;border:none;padding:6px 12px;border-radius:20px;text-decoration:none;font-size:13px}
+main{flex:1;max-width:680px;width:100%;margin:24px auto;padding:0 16px}
+.wizard-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.04);padding:28px 24px}
+.progress-bar-container{margin-bottom:28px}
+.steps-indicator{display:flex;justify-content:space-between;font-size:12px;color:#64748b;font-weight:600;margin-bottom:8px}
+.bar-track{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;background:#1a2e6e;width:20%;transition:width 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
+.step-title{font-size:20px;font-weight:700;color:#1a2e6e;margin-bottom:4px;font-family:'Noto Sans Devanagari',sans-serif}
+.step-desc{font-size:13px;color:#64748b;margin-bottom:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.full-col{grid-column:1 / -1}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px}
+.input-control{width:100%;padding:12px 14px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:14px;outline:none;font-family:inherit;background:#fff;transition:border-color 0.2s}
+.input-control:focus{border-color:#1a2e6e;box-shadow:0 0 0 3px rgba(26,46,110,0.1)}
+.gender-options{display:flex;gap:12px}
+.radio-chip{flex:1;border:1.5px solid #cbd5e1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:#475569;transition:all 0.2s}
+.radio-chip input{display:none}
+.radio-chip.selected{border-color:#1a2e6e;background:#eef2ff;color:#1a2e6e}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.skill-card{border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff}
+.skill-card:hover{border-color:#1a2e6e;background:#f8fafc}
+.skill-card.selected{border-color:#f97316;background:#fff7ed;box-shadow:0 0 0 2px rgba(249,115,22,0.2)}
+.skill-emoji{font-size:24px;display:block;margin-bottom:6px}
+.skill-name{font-size:13px;font-weight:600;color:#1e293b}
+.lang-checkboxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.checkbox-chip{border:1px solid #cbd5e1;padding:8px 12px;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.upload-box{border:2px dashed #cbd5e1;border-radius:12px;padding:24px;text-align:center;cursor:pointer;background:#f8fafc;margin-bottom:16px;transition:border-color 0.2s}
+.upload-box:hover{border-color:#1a2e6e}
+.id-card-preview{background:linear-gradient(135deg,#1a2e6e,#0f1f52);color:#fff;border-radius:16px;padding:24px;position:relative;overflow:hidden;box-shadow:0 10px 25px rgba(26,46,110,0.3);margin-bottom:20px}
+.id-card-preview::after{content:'';position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;background:rgba(249,115,22,0.15);border-radius:50%}
+.id-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:12px}
+.id-body{display:flex;gap:20px;align-items:center}
+.id-avatar{width:70px;height:70px;border-radius:50%;background:#f97316;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;border:3px solid #fff}
+.id-info h3{font-size:20px;font-weight:700}
+.id-info p{font-size:13px;opacity:0.85;margin-top:2px}
+.badge-verified{display:inline-flex;align-items:center;gap:4px;background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;margin-top:6px}
+.btn-row{display:flex;justify-content:space-between;gap:12px;margin-top:28px;border-top:1px solid #e2e8f0;padding-top:20px}
+.btn-prev{background:#fff;border:1.5px solid #cbd5e1;color:#475569;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-next{background:#1a2e6e;border:none;color:#fff;padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-left:auto}
+.btn-finish{background:#f97316;border:none;color:#fff;padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-left:auto}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}.lang-checkboxes{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <a href="../../index.html" class="header-logo">
+    <img src="../../assets/logo.jpg" alt="KaamSetu"/>
+    <span>KaamSetu कामसेतु</span>
+  </a>
+  <a href="../language.html" class="lang-btn">🌐 भाषा</a>
+</header>
+
+<main>
+  <div class="wizard-card">
+    <div class="progress-bar-container">
+      <div class="steps-indicator">
+        <span id="stepNumberText">चरण 1 / 5</span>
+        <span id="stepCategoryText">बुनियादी जानकारी (Basic Info)</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <form id="wizardForm" onsubmit="return false;">
+      <!-- STEP 1: Basic Info -->
+      <div class="wizard-step" id="step1">
+        <h2 class="step-title" data-i18n="basicInfo">बुनियादी जानकारी</h2>
+        <p class="step-desc">अपना नाम और पता दर्ज करके पहचान बनाएं।</p>
+        
+        <div class="form-grid">
+          <div class="form-group full-col">
+            <label class="form-label" data-i18n="fullName">पूरा नाम (Full Name) *</label>
+            <input type="text" id="fullName" class="input-control" placeholder="उदा. राम कुमार" required value="राम कुमार"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="age">आयु (Age) *</label>
+            <input type="number" id="age" class="input-control" placeholder="28" min="18" max="70" required value="28"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="gender">लिंग (Gender) *</label>
+            <div class="gender-options">
+              <label class="radio-chip selected" onclick="selectGender(this, 'male')">
+                <input type="radio" name="gender" value="male" checked/> पुरुष (Male)
+              </label>
+              <label class="radio-chip" onclick="selectGender(this, 'female')">
+                <input type="radio" name="gender" value="female"/> महिला (Female)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="village">शहर / गांव (City / Village) *</label>
+            <input type="text" id="city" class="input-control" placeholder="उदा. पटना / दिल्ली" required value="दिल्ली"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="state">राज्य (State) *</label>
+            <select id="state" class="input-control">
+              <option value="Delhi" selected>दिल्ली (Delhi)</option>
+              <option value="Uttar Pradesh">उत्तर प्रदेश (Uttar Pradesh)</option>
+              <option value="Bihar">बिहार (Bihar)</option>
+              <option value="Maharashtra">महाराष्ट्र (Maharashtra)</option>
+              <option value="Rajasthan">राजस्थान (Rajasthan)</option>
+              <option value="West Bengal">पश्चिम बंगाल (West Bengal)</option>
+              <option value="Madhya Pradesh">मध्य प्रदेश (Madhya Pradesh)</option>
+              <option value="Gujarat">गुजरात (Gujarat)</option>
+              <option value="Karnataka">कर्नाटक (Karnataka)</option>
+              <option value="Tamil Nadu">तमिलनाडु (Tamil Nadu)</option>
+              <option value="Punjab">पंजाब (Punjab)</option>
+              <option value="Haryana">हरियाणा (Haryana)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Skills -->
+      <div class="wizard-step" id="step2" style="display:none;">
+        <h2 class="step-title" data-i18n="skillsInfo">अपने कौशल चुनें</h2>
+        <p class="step-desc">वे सभी काम चुनें जो आप कुशलता से कर सकते हैं। (एक या अधिक)</p>
+
+        <div class="skills-grid" id="skillsGrid">
+          <div class="skill-card selected" onclick="toggleSkill(this, 'electrician')"><span class="skill-emoji">⚡</span><span class="skill-name">इलेक्ट्रीशियन</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'plumber')"><span class="skill-emoji">🔧</span><span class="skill-name">प्लंबर</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'carpenter')"><span class="skill-emoji">🪚</span><span class="skill-name">बढ़ई</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'mason')"><span class="skill-emoji">🧱</span><span class="skill-name">राजमिस्त्री</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'painter')"><span class="skill-emoji">🎨</span><span class="skill-name">पेंटर</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'welder')"><span class="skill-emoji">🔩</span><span class="skill-name">वेल्डर</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'driver')"><span class="skill-emoji">🚗</span><span class="skill-name">ड्राइवर</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'cook')"><span class="skill-emoji">🍳</span><span class="skill-name">रसोइया</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'gardener')"><span class="skill-emoji">🌿</span><span class="skill-name">माली</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'security')"><span class="skill-emoji">🔒</span><span class="skill-name">सुरक्षा गार्ड</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'domestic')"><span class="skill-emoji">🏠</span><span class="skill-name">घरेलू सहायक</span></div>
+          <div class="skill-card" onclick="toggleSkill(this, 'construction')"><span class="skill-emoji">🏗️</span><span class="skill-name">निर्माण मजदूर</span></div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Experience & Languages -->
+      <div class="wizard-step" id="step3" style="display:none;">
+        <h2 class="step-title" data-i18n="expInfo">कार्य अनुभव एवं भाषाएं</h2>
+        <p class="step-desc">अपना अनुभव बताएं जिससे आपको अधिक वेतन वाले काम मिलें।</p>
+
+        <div class="form-group">
+          <label class="form-label">कार्य अनुभव: <strong id="expVal">5 वर्ष (5 Years)</strong></label>
+          <input type="range" id="experience" min="0" max="25" value="5" class="input-control" oninput="document.getElementById('expVal').innerText = this.value + ' वर्ष (' + this.value + ' Years)'"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="langSpoken">बोली जाने वाली भाषाएं (Languages Spoken)</label>
+          <div class="lang-checkboxes">
+            <label class="checkbox-chip"><input type="checkbox" checked value="Hindi"/> हिंदी (Hindi)</label>
+            <label class="checkbox-chip"><input type="checkbox" checked value="English"/> English</label>
+            <label class="checkbox-chip"><input type="checkbox" value="Bhojpuri"/> भोजपुरी</label>
+            <label class="checkbox-chip"><input type="checkbox" value="Bengali"/> বাংলা</label>
+            <label class="checkbox-chip"><input type="checkbox" value="Punjabi"/> ਪੰਜਾਬੀ</label>
+            <label class="checkbox-chip"><input type="checkbox" value="Marathi"/> मराठी</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">अपने बारे में संक्षेप में बताएं (About yourself)</label>
+          <textarea id="about" class="input-control" rows="3" placeholder="उदा. मुझे घरेलू और कमर्शियल वायरिंग का 5 साल का अच्छा अनुभव है।">मुझे घरेलू और औद्योगिक वायरिंग का 5 वर्षों का संतोषजनक अनुभव है।</textarea>
+        </div>
+      </div>
+
+      <!-- STEP 4: ID Verification -->
+      <div class="wizard-step" id="step4" style="display:none;">
+        <h2 class="step-title" data-i18n="idVerify">पहचान सत्यापन (ID Verification)</h2>
+        <p class="step-desc">सत्यापित श्रमिकों को 3 गुना अधिक काम और शीघ्र भुगतान मिलता है।</p>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="aadhaarNum">आधार कार्ड नंबर (Aadhaar Number) *</label>
+          <input type="text" id="aadhaar" class="input-control" placeholder="XXXX XXXX 1234" value="5412 8932 4589" maxlength="14"/>
+        </div>
+
+        <div class="upload-box" onclick="mockUpload('aadhaar')">
+          <div style="font-size:32px;margin-bottom:8px">📄</div>
+          <strong style="font-size:14px;color:#1a2e6e">आधार कार्ड की फोटो अपलोड करें</strong>
+          <p style="font-size:12px;color:#64748b;margin-top:4px" id="aadhaarStatus">फ़ाइल चुनें या यहाँ खींचें (JPG, PNG, PDF)</p>
+        </div>
+
+        <div class="upload-box" onclick="mockUpload('photo')">
+          <div style="font-size:32px;margin-bottom:8px">📸</div>
+          <strong style="font-size:14px;color:#1a2e6e">अपनी पासपोर्ट फोटो अपलोड करें</strong>
+          <p style="font-size:12px;color:#64748b;margin-top:4px" id="photoStatus">कैमरे से फोटो लें या गैलरी से चुनें</p>
+        </div>
+      </div>
+
+      <!-- STEP 5: Digital ID Card Preview -->
+      <div class="wizard-step" id="step5" style="display:none;">
+        <h2 class="step-title" data-i18n="profileReady">आपका डिजिटल पहचान पत्र तैयार है! 🎉</h2>
+        <p class="step-desc">यह कार्ड सभी नियोक्ताओं को दिखाई देगा।</p>
+
+        <div class="id-card-preview">
+          <div class="id-header">
+            <div>
+              <strong style="font-size:16px">KaamSetu डिजिटल पहचान पत्र</strong>
+              <div style="font-size:11px;opacity:0.75">भारत सरकार मान्यता अनुरूप डिजिटल ID</div>
+            </div>
+            <div style="font-size:24px">🇮🇳</div>
+          </div>
+          <div class="id-body">
+            <div class="id-avatar" id="cardAvatar">RK</div>
+            <div class="id-info">
+              <h3 id="cardName">राम कुमार</h3>
+              <p id="cardSkillLocation">⚡ इलेक्ट्रीशियन • दिल्ली, भारत</p>
+              <div class="badge-verified">✓ आधार सत्यापित (Verified)</div>
+              <div style="margin-top:8px;font-size:12px;background:rgba(255,255,255,0.15);padding:4px 10px;border-radius:8px;display:inline-block">
+                विश्वास स्कोर: <strong>85/100 (उत्कृष्ट)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="btn-row">
+        <button type="button" class="btn-prev" id="prevBtn" style="display:none;" onclick="navigateStep(-1)">⬅ वापस (Back)</button>
+        <button type="button" class="btn-next" id="nextBtn" onclick="navigateStep(1)">आगे बढ़ें (Next) ➔</button>
+        <button type="button" class="btn-finish" id="finishBtn" style="display:none;" onclick="saveAndGoToDashboard()">प्रोफाइल बनाएं और डैशबोर्ड खोलें ➔</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="../../js/translations.js"></script>
+<script>
+let currentStep = 1;
+let selectedSkills = ['electrician'];
+
+const stepTitles = [
+  'बुनियादी जानकारी (Basic Info)',
+  'कौशल चयन (Select Skills)',
+  'अनुभव एवं भाषा (Experience)',
+  'पहचान सत्यापन (ID Verification)',
+  'डिजिटल पहचान पत्र (Digital ID Card)'
+];
+
+function selectGender(el, val) {
+  document.querySelectorAll('.radio-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleSkill(el, skill) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!selectedSkills.includes(skill)) selectedSkills.push(skill);
+  } else {
+    selectedSkills = selectedSkills.filter(s => s !== skill);
+  }
+}
+
+function mockUpload(type) {
+  if (type === 'aadhaar') {
+    document.getElementById('aadhaarStatus').innerHTML = '<span style="color:#22c55e;font-weight:700">✓ आधार_कार्ड_सत्यापित.jpg (अपलोड सफल)</span>';
+  } else {
+    document.getElementById('photoStatus').innerHTML = '<span style="color:#22c55e;font-weight:700">✓ प्रोफाइल_फोटो.jpg (अपलोड सफल)</span>';
+  }
+}
+
+function updateWizardUI() {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('step' + i).style.display = (i === currentStep) ? 'block' : 'none';
+  }
+  document.getElementById('stepNumberText').innerText = `चरण ${currentStep} / 5`;
+  document.getElementById('stepCategoryText').innerText = stepTitles[currentStep - 1];
+  document.getElementById('progressBar').style.width = (currentStep * 20) + '%';
+
+  document.getElementById('prevBtn').style.display = (currentStep > 1) ? 'block' : 'none';
+  document.getElementById('nextBtn').style.display = (currentStep < 5) ? 'block' : 'none';
+  document.getElementById('finishBtn').style.display = (currentStep === 5) ? 'block' : 'none';
+
+  if (currentStep === 5) {
+    const name = document.getElementById('fullName').value || 'राम कुमार';
+    const city = document.getElementById('city').value || 'दिल्ली';
+    document.getElementById('cardName').innerText = name;
+    document.getElementById('cardAvatar').innerText = name.substring(0, 2);
+    document.getElementById('cardSkillLocation').innerText = `⚡ ${selectedSkills.join(', ')} • ${city}`;
+  }
+}
+
+function navigateStep(direction) {
+  if (direction === 1 && currentStep === 1) {
+    if (!document.getElementById('fullName').value) {
+      alert('कृपया अपना नाम दर्ज करें।');
+      return;
+    }
+  }
+  currentStep += direction;
+  updateWizardUI();
+}
+
+function saveAndGoToDashboard() {
+  const workerData = {
+    name: document.getElementById('fullName').value || 'राम कुमार',
+    age: document.getElementById('age').value || '28',
+    city: document.getElementById('city').value || 'दिल्ली',
+    state: document.getElementById('state').value || 'Delhi',
+    skills: selectedSkills,
+    experience: document.getElementById('experience').value || '5',
+    about: document.getElementById('about').value,
+    trustScore: 85,
+    verified: true
+  };
+  localStorage.setItem('kaamsetu_worker_data', JSON.stringify(workerData));
+  localStorage.setItem('kaamsetu_worker_registered', 'true');
+  window.location.href = 'dashboard.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateWizardUI();
+  applyTranslations();
+});
+</script>
+</body>
+</html>

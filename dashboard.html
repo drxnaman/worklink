@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - श्रमिक डैशबोर्ड (Worker Dashboard)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-left img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.header-left span{font-size:17px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.header-right{display:flex;align-items:center;gap:12px}
+.icon-btn{background:rgba(255,255,255,0.15);color:#fff;border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;font-size:16px}
+main{max-width:800px;margin:0 auto;padding:20px 16px}
+.welcome-banner{background:linear-gradient(135deg,#1a2e6e 0%,#0f1f52 100%);color:#fff;border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 6px 20px rgba(26,46,110,0.25)}
+.welcome-banner::after{content:'';position:absolute;right:-20px;bottom:-20px;width:120px;height:120px;background:rgba(249,115,22,0.2);border-radius:50%}
+.greeting-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.user-name{font-size:22px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.verified-tag{background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.trust-meter-box{background:rgba(255,255,255,0.12);backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.trust-score{font-size:24px;font-weight:800;color:#f97316}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+.stat-num{font-size:22px;font-weight:800;color:#1a2e6e}
+.stat-label{font-size:12px;color:#64748b;margin-top:4px}
+.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px}
+.action-btn{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:#0f172a;transition:all 0.2s}
+.action-btn:hover{border-color:#1a2e6e;background:#f8fafc;transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,46,110,0.08)}
+.action-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.bg-blue{background:#e0e7ff;color:#1a2e6e}
+.bg-orange{background:#ffedd5;color:#f97316}
+.bg-green{background:#dcfce7;color:#16a34a}
+.bg-purple{background:#f3e8ff;color:#9333ea}
+.action-text strong{display:block;font-size:14px;font-weight:700}
+.action-text span{font-size:11px;color:#64748b}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section-title{font-size:18px;font-weight:700;color:#0f172a;font-family:'Noto Sans Devanagari',sans-serif}
+.see-all{font-size:13px;color:#1a2e6e;font-weight:600;text-decoration:none}
+.jobs-list{display:flex;flex-direction:column;gap:12px}
+.job-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.04);transition:transform 0.2s}
+.job-card:hover{transform:translateY(-2px);border-color:#cbd5e1}
+.job-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.job-title{font-size:16px;font-weight:700;color:#0f172a}
+.job-badge{background:#eef2ff;color:#1a2e6e;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px}
+.job-company{font-size:13px;color:#475569;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.job-details{display:flex;gap:16px;font-size:12px;color:#64748b;margin-bottom:14px;flex-wrap:wrap}
+.job-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9;padding-top:12px}
+.job-salary{font-size:15px;font-weight:800;color:#16a34a}
+.apply-btn{background:#1a2e6e;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.apply-btn:hover{background:#0f1f52}
+.apply-btn.applied{background:#22c55e;cursor:default}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#1a2e6e}
+.nav-item-icon{font-size:20px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:600;display:none;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="../../assets/logo.jpg" alt="Logo"/>
+    <span>KaamSetu</span>
+  </div>
+  <div class="header-right">
+    <a href="../language.html" class="icon-btn" title="भाषा बदलें">🌐</a>
+    <a href="../../index.html" class="icon-btn" title="लॉगआउट" onclick="logout()">🚪</a>
+  </div>
+</header>
+
+<main>
+  <div class="welcome-banner">
+    <div class="greeting-row">
+      <div>
+        <div style="font-size:13px;opacity:0.85" id="greetingText">नमस्ते! 🙏</div>
+        <div class="user-name" id="userName">राम कुमार</div>
+      </div>
+      <div class="verified-tag">✓ आधार सत्यापित</div>
+    </div>
+    <div class="trust-meter-box">
+      <div>
+        <div style="font-size:12px;opacity:0.9">आपका विश्वास स्कोर (Trust Score)</div>
+        <div style="font-size:11px;opacity:0.75">सत्यापित आधार एवं कार्य रेटिंग आधारित</div>
+      </div>
+      <div class="trust-score">85<span style="font-size:14px;color:#fff">/100</span></div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="statApplied">4</div>
+      <div class="stat-label" data-i18n="appliedJobs">आवेदित काम</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">12</div>
+      <div class="stat-label" data-i18n="profileViews">प्रोफाइल देखे</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:#16a34a">1</div>
+      <div class="stat-label">साक्षात्कार (Interview)</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <a href="jobs.html" class="action-btn">
+      <div class="action-icon bg-blue">🔍</div>
+      <div class="action-text">
+        <strong data-i18n="findJobs">काम खोजें</strong>
+        <span>पास की नई नौकरियां</span>
+      </div>
+    </a>
+    <a href="applications.html" class="action-btn">
+      <div class="action-icon bg-orange">📋</div>
+      <div class="action-text">
+        <strong data-i18n="myApplications">मेरे आवेदन</strong>
+        <span>स्थिति ट्रैक करें</span>
+      </div>
+    </a>
+    <a href="profile.html" class="action-btn">
+      <div class="action-icon bg-green">🪪</div>
+      <div class="action-text">
+        <strong data-i18n="myProfile">डिजिटल ID</strong>
+        <span>पहचान पत्र देखें</span>
+      </div>
+    </a>
+    <a href="jobs.html?filter=nearby" class="action-btn">
+      <div class="action-icon bg-purple">📍</div>
+      <div class="action-text">
+        <strong>पास के काम</strong>
+        <span>5 किमी के दायरे में</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-header">
+    <h2 class="section-title" data-i18n="recommended">अनुशंसित नौकरियां (Recommended)</h2>
+    <a href="jobs.html" class="see-all">सभी देखें ➔</a>
+  </div>
+
+  <div class="jobs-list" id="recommendedJobs">
+    <div class="job-card">
+      <div class="job-top">
+        <div>
+          <div class="job-title">⚡ कमर्शियल इलेक्ट्रीशियन चाहिए</div>
+          <div class="job-company">🏢 शर्मा कंस्ट्रक्शन एंड इंफ्रा</div>
+        </div>
+        <span class="job-badge">तुरंत आवश्यकता</span>
+      </div>
+      <div class="job-details">
+        <span>📍 दिल्ली, NCR</span>
+        <span>⏱️ 1 माह कार्य</span>
+        <span>⚡ 3 वर्ष अनुभव</span>
+      </div>
+      <div class="job-bottom">
+        <div class="job-salary">₹850 / दिन</div>
+        <button class="apply-btn" onclick="applyJob(this, 'कमर्शियल इलेक्ट्रीशियन')">आवेदन करें (Apply)</button>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-top">
+        <div>
+          <div class="job-title">🔧 आवासीय प्लंबिंग विशेषज्ञ</div>
+          <div class="job-company">🏢 मेट्रो हाउसिंग सोसाइटी</div>
+        </div>
+        <span class="job-badge" style="background:#fef3c7;color:#d97706">सत्यापित नियोक्ता</span>
+      </div>
+      <div class="job-details">
+        <span>📍 नोएडा, सेक्टर 62</span>
+        <span>⏱️ पूर्णकालिक</span>
+        <span>🔧 2 वर्ष अनुभव</span>
+      </div>
+      <div class="job-bottom">
+        <div class="job-salary">₹22,000 / माह</div>
+        <button class="apply-btn" onclick="applyJob(this, 'प्लंबिंग विशेषज्ञ')">आवेदन करें (Apply)</button>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-top">
+        <div>
+          <div class="job-title">🚗 कमर्शियल ड्राइवर (LMV)</div>
+          <div class="job-company">🏢 फास्ट-ट्रैक लॉजिस्टिक्स</div>
+        </div>
+        <span class="job-badge">दैनिक भुगतान</span>
+      </div>
+      <div class="job-details">
+        <span>📍 गुड़गांव, हरियाणा</span>
+        <span>⏱️ 6 माह अनुबंध</span>
+        <span>🚗 वैध ड्राइविंग लाइसेंस</span>
+      </div>
+      <div class="job-bottom">
+        <div class="job-salary">₹750 / दिन</div>
+        <button class="apply-btn" onclick="applyJob(this, 'कमर्शियल ड्राइवर')">आवेदन करें (Apply)</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toastMsg">आवेदन सफलतापूर्वक भेजा गया! ✓</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item active">
+    <span class="nav-item-icon">🏠</span>
+    <span>होम (Home)</span>
+  </a>
+  <a href="jobs.html" class="nav-item">
+    <span class="nav-item-icon">🔍</span>
+    <span>काम खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item">
+    <span class="nav-item-icon">📋</span>
+    <span>आवेदन</span>
+  </a>
+  <a href="profile.html" class="nav-item">
+    <span class="nav-item-icon">👤</span>
+    <span>प्रोफाइल ID</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toastMsg');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function applyJob(btn, title) {
+  if (btn.classList.contains('applied')) return;
+  btn.classList.add('applied');
+  btn.innerText = 'आवेदित ✓';
+  showToast(`"${title}" के लिए आवेदन सफलतापूर्वक भेजा गया!`);
+  let count = parseInt(document.getElementById('statApplied').innerText) || 0;
+  document.getElementById('statApplied').innerText = count + 1;
+}
+
+function logout() {
+  if (confirm('क्या आप लॉगआउट करना चाहते हैं?')) {
+    localStorage.removeItem('kaamsetu_authenticated');
+    window.location.href = '../../index.html';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedData = localStorage.getItem('kaamsetu_worker_data');
+  if (savedData) {
+    try {
+      const data = JSON.parse(savedData);
+      if (data.name) document.getElementById('userName').innerText = data.name;
+    } catch(e){}
+  }
+  applyTranslations();
+});
+</script>
+</body>
+</html>

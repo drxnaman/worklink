@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - कुशल कामगार खोजें (Find Workers)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.search-bar{background:#1a2e6e;padding:0 16px 16px 16px}
+.search-input-wrap{background:#fff;border-radius:12px;display:flex;align-items:center;padding:10px 14px;gap:10px}
+.search-input-wrap input{border:none;outline:none;width:100%;font-size:14px;font-family:inherit}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;background:#fff;border-bottom:1px solid #e2e8f0;scrollbar-width:none}
+.f-chip{white-space:nowrap;padding:8px 14px;border-radius:20px;border:1px solid #cbd5e1;background:#f8fafc;font-size:12px;font-weight:600;color:#475569;cursor:pointer}
+.f-chip.active{background:#f97316;color:#fff;border-color:#f97316}
+main{max-width:850px;margin:0 auto;padding:16px}
+.workers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.worker-box{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.03);display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s}
+.worker-box:hover{border-color:#f97316;transform:translateY(-2px);box-shadow:0 6px 18px rgba(249,115,22,0.12)}
+.worker-head{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.w-avatar{width:52px;height:52px;border-radius:50%;background:#1a2e6e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.w-name{font-size:16px;font-weight:700;color:#0f172a}
+.w-skill-tag{font-size:11px;font-weight:700;color:#c2410c;background:#ffedd5;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:2px}
+.trust-badge-row{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:12px}
+.trust-val{font-weight:800;color:#16a34a}
+.w-details{font-size:12px;color:#64748b;margin-bottom:16px;line-height:1.6}
+.w-actions{display:flex;gap:8px}
+.btn-act{flex:1;padding:9px;border-radius:8px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:none;text-decoration:none;transition:all 0.2s}
+.btn-act-call{background:#16a34a;color:#fff}
+.btn-act-view{background:#1a2e6e;color:#fff}
+.btn-act-short{background:#ffedd5;color:#c2410c;border:1px solid #fed7aa}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#f97316}
+.nav-item-icon{font-size:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="dashboard.html" class="back-btn">⬅</a>
+    <span class="header-title" data-i18n="findWorkers">कुशल कामगार खोजें</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<div class="search-bar">
+  <div class="search-input-wrap">
+    <span>🔍</span>
+    <input type="text" id="wSearch" placeholder="कामगार का नाम, कौशल या स्थान खोजें..." oninput="filterWorkers()"/>
+  </div>
+</div>
+
+<div class="filter-row">
+  <div class="f-chip active" onclick="setFilter(this, 'all')">सभी (All)</div>
+  <div class="f-chip" onclick="setFilter(this, 'electrician')">⚡ इलेक्ट्रीशियन</div>
+  <div class="f-chip" onclick="setFilter(this, 'plumber')">🔧 प्लंबर</div>
+  <div class="f-chip" onclick="setFilter(this, 'driver')">🚗 ड्राइवर</div>
+  <div class="f-chip" onclick="setFilter(this, 'carpenter')">🪚 बढ़ई</div>
+  <div class="f-chip" onclick="setFilter(this, 'mason')">🧱 राजमिस्त्री</div>
+  <div class="f-chip" onclick="setFilter(this, 'domestic')">🏠 घरेलू सहायिका</div>
+  <div class="f-chip" onclick="setFilter(this, 'welder')">🔩 वेल्डर</div>
+</div>
+
+<main>
+  <div style="font-size:13px;color:#64748b;margin-bottom:14px;font-weight:600" id="wCount">8 सत्यापित कामगार उपलब्ध</div>
+
+  <div class="workers-grid" id="workersGrid">
+    <!-- Worker 1 -->
+    <div class="worker-box" data-skill="electrician" data-text="राम कुमार delhi electrician इलेक्ट्रीशियन">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#2563eb">RK</div>
+          <div>
+            <div class="w-name">राम कुमार <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">⚡ इलेक्ट्रीशियन (5 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">85/100 (उत्कृष्ट)</span>
+        </div>
+        <div class="w-details">
+          <div>📍 दिल्ली, NCR</div>
+          <div>⭐ 4.8 / 5 (14 रेटिंग)</div>
+          <div>🗣️ हिंदी, English</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=राम+कुमार&skill=इलेक्ट्रीशियन&city=दिल्ली&exp=5&score=85" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9876543210 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+
+    <!-- Worker 2 -->
+    <div class="worker-box" data-skill="plumber" data-text="मोहम्मद इकबाल hyderabad plumber प्लंबर">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#059669">MI</div>
+          <div>
+            <div class="w-name">मोहम्मद इकबाल <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">🔧 प्लंबर (7 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">90/100 (शीर्ष)</span>
+        </div>
+        <div class="w-details">
+          <div>📍 हैदराबाद, तेलंगाना</div>
+          <div>⭐ 4.9 / 5 (22 रेटिंग)</div>
+          <div>🗣️ हिंदी, तेलुगु, اردو</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=मोहम्मद+इकबाल&skill=प्लंबर&city=हैदराबाद&exp=7&score=90" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9789012345 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+
+    <!-- Worker 3 -->
+    <div class="worker-box" data-skill="driver" data-text="रमेश यादव bangalore driver ड्राइवर">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#d97706">RY</div>
+          <div>
+            <div class="w-name">रमेश यादव <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">🚗 कमर्शियल ड्राइवर (10 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">88/100</span>
+        </div>
+        <div class="w-details">
+          <div>📍 बेंगलुरु, कर्नाटक</div>
+          <div>⭐ 4.7 / 5 (30+ ट्रिप)</div>
+          <div>🗣️ हिंदी, ಕನ್ನಡ, English</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=रमेश+यादव&skill=ड्राइवर&city=बेंगलुरु&exp=10&score=88" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9833445566 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+
+    <!-- Worker 4 -->
+    <div class="worker-box" data-skill="domestic" data-text="सुनीता देवी mumbai domestic helper घरेलू सहायिका">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#db2777">SD</div>
+          <div>
+            <div class="w-name">सुनीता देवी <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">🏠 घरेलू सहायिका (3 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">78/100</span>
+        </div>
+        <div class="w-details">
+          <div>📍 मुंबई, महाराष्ट्र</div>
+          <div>⭐ 4.5 / 5 (8 परिवार)</div>
+          <div>🗣️ हिंदी, मराठी</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=सुनीता+देवी&skill=घरेलू+सहायिका&city=मुंबई&exp=3&score=78" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9812345678 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+
+    <!-- Worker 5 -->
+    <div class="worker-box" data-skill="carpenter" data-text="विजय पटेल ahmedabad carpenter बढ़ई">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#4f46e5">VP</div>
+          <div>
+            <div class="w-name">विजय पटेल <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">🪚 मास्टर बढ़ई (12 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">93/100 (शीर्ष)</span>
+        </div>
+        <div class="w-details">
+          <div>📍 अहमदाबाद, गुजरात</div>
+          <div>⭐ 4.9 / 5 (40+ प्रोजेक्ट)</div>
+          <div>🗣️ ગુજરાતી, हिंदी</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=विजय+पटेल&skill=बढ़ई&city=अहमदाबाद&exp=12&score=93" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9844556677 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+
+    <!-- Worker 6 -->
+    <div class="worker-box" data-skill="welder" data-text="अर्जुन सिंह pune welder वेल्डर">
+      <div>
+        <div class="worker-head">
+          <div class="w-avatar" style="background:#0284c7">AS</div>
+          <div>
+            <div class="w-name">अर्जुन सिंह <span style="color:#22c55e;font-size:11px">✓ आधार</span></div>
+            <span class="w-skill-tag">🔩 MIG/TIG वेल्डर (6 वर्ष)</span>
+          </div>
+        </div>
+        <div class="trust-badge-row">
+          <span>🛡️ विश्वास स्कोर:</span>
+          <span class="trust-val">82/100</span>
+        </div>
+        <div class="w-details">
+          <div>📍 पुणे, महाराष्ट्र</div>
+          <div>⭐ 4.6 / 5 (16 समीक्षाएं)</div>
+          <div>🗣️ हिंदी, मराठी, English</div>
+        </div>
+      </div>
+      <div class="w-actions">
+        <a href="../worker/worker-profile-view.html?name=अर्जुन+सिंह&skill=वेल्डर&city=पुणे&exp=6&score=82" class="btn-act btn-act-view">प्रोफाइल</a>
+        <button class="btn-act btn-act-call" onclick="alert('+91 9877889900 पर कॉल की जा रही है...')">📞 कॉल</button>
+        <button class="btn-act btn-act-short" onclick="shortlist(this)">★ सेव</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">
+    <span class="nav-item-icon">🏠</span>
+    <span>डैशबोर्ड</span>
+  </a>
+  <a href="post-job.html" class="nav-item">
+    <span class="nav-item-icon">➕</span>
+    <span>काम पोस्ट करें</span>
+  </a>
+  <a href="find-workers.html" class="nav-item active">
+    <span class="nav-item-icon">🔍</span>
+    <span>कामगार खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item">
+    <span class="nav-item-icon">📊</span>
+    <span>कैंडिडेट्स</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+let selSkill = 'all';
+
+function setFilter(el, skill) {
+  document.querySelectorAll('.f-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selSkill = skill;
+  filterWorkers();
+}
+
+function filterWorkers() {
+  const query = document.getElementById('wSearch').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.worker-box');
+  let count = 0;
+
+  cards.forEach(card => {
+    const matchSkill = (selSkill === 'all') || (card.dataset.skill === selSkill);
+    const matchQuery = !query || card.dataset.text.toLowerCase().includes(query) || card.innerText.toLowerCase().includes(query);
+
+    if (matchSkill && matchQuery) {
+      card.style.display = 'flex';
+      count++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  document.getElementById('wCount').innerText = `${count} सत्यापित कामगार उपलब्ध`;
+}
+
+function shortlist(btn) {
+  btn.innerText = '✓ सेव किया';
+  btn.style.background = '#dcfce7';
+  btn.style.color = '#15803d';
+  btn.style.borderColor = '#86efac';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>

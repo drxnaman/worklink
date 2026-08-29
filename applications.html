@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KaamSetu - मेरे आवेदन (My Applications)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans','Noto Sans Devanagari',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+header{background:#1a2e6e;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:12px}
+.back-btn{color:#fff;text-decoration:none;font-size:20px}
+.header-title{font-size:18px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif}
+.filter-tabs{display:flex;background:#fff;border-bottom:1px solid #e2e8f0;padding:8px 16px;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tab-btn{padding:8px 16px;border-radius:20px;border:none;background:#f1f5f9;color:#64748b;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.tab-btn.active{background:#1a2e6e;color:#fff}
+main{max-width:800px;margin:0 auto;padding:16px}
+.app-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+.app-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.app-title{font-size:16px;font-weight:700;color:#0f172a}
+.app-company{font-size:13px;color:#475569;margin-top:2px}
+.status-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-block}
+.status-pending{background:#fef3c7;color:#b45309}
+.status-viewed{background:#e0e7ff;color:#3730a3}
+.status-interview{background:#f3e8ff;color:#7e22ce}
+.status-hired{background:#dcfce7;color:#15803d}
+.pipeline{display:flex;align-items:center;justify-content:space-between;margin:20px 0 16px;position:relative}
+.pipeline::before{content:'';position:absolute;top:14px;left:10%;right:10%;height:2px;background:#e2e8f0;z-index:1}
+.pipe-step{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2}
+.pipe-circle{width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#64748b}
+.pipe-step.done .pipe-circle{background:#22c55e;border-color:#22c55e;color:#fff}
+.pipe-step.current .pipe-circle{background:#1a2e6e;border-color:#1a2e6e;color:#fff}
+.pipe-label{font-size:11px;color:#64748b;font-weight:600}
+.pipe-step.done .pipe-label,.pipe-step.current .pipe-label{color:#0f172a}
+.interview-box{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:12px 16px;margin:12px 0;display:flex;align-items:center;justify-content:space-between}
+.hired-banner{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:12px 16px;margin:12px 0;color:#065f46;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.app-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9;padding-top:12px;font-size:12px;color:#64748b}
+.action-link{background:#1a2e6e;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:10px 0;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#64748b;font-size:11px;font-weight:600}
+.nav-item.active{color:#1a2e6e}
+.nav-item-icon{font-size:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="dashboard.html" class="back-btn">⬅</a>
+    <span class="header-title" data-i18n="myApplications">मेरे आवेदन</span>
+  </div>
+  <a href="../language.html" style="color:#fff;text-decoration:none;font-size:18px">🌐</a>
+</header>
+
+<div class="filter-tabs">
+  <button class="tab-btn active" onclick="filterTab(this, 'all')">सभी (All)</button>
+  <button class="tab-btn" onclick="filterTab(this, 'interview')">साक्षात्कार (1)</button>
+  <button class="tab-btn" onclick="filterTab(this, 'hired')">नियुक्त (1)</button>
+  <button class="tab-btn" onclick="filterTab(this, 'pending')">लंबित (2)</button>
+</div>
+
+<main>
+  <!-- Card 1: Interview Scheduled -->
+  <div class="app-card" data-status="interview">
+    <div class="app-header">
+      <div>
+        <div class="app-title">⚡ कमर्शियल इलेक्ट्रीशियन</div>
+        <div class="app-company">🏢 शर्मा इंफ्रा प्रोजेक्ट्स • दिल्ली</div>
+      </div>
+      <span class="status-pill status-interview">साक्षात्कार तय (Interview)</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step done">
+        <div class="pipe-circle">✓</div>
+        <span class="pipe-label">आवेदित</span>
+      </div>
+      <div class="pipe-step done">
+        <div class="pipe-circle">✓</div>
+        <span class="pipe-label">देखा गया</span>
+      </div>
+      <div class="pipe-step current">
+        <div class="pipe-circle">📅</div>
+        <span class="pipe-label">साक्षात्कार</span>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle">🏁</div>
+        <span class="pipe-label">नियुक्ति</span>
+      </div>
+    </div>
+
+    <div class="interview-box">
+      <div>
+        <strong style="color:#6b21a8;font-size:13px">📍 साक्षात्कार: कल सुबह 11:00 बजे</strong>
+        <div style="font-size:12px;color:#7e22ce">शर्मा इंफ्रा ऑफिस, ओखला फेज-2, नई दिल्ली</div>
+      </div>
+      <button class="action-link" style="background:#7e22ce" onclick="alert('नियोक्ता नंबर: +91 9811223344 पर कॉल की जा रही है...')">📞 कॉल करें</button>
+    </div>
+
+    <div class="app-footer">
+      <span>वेतन: <strong>₹850 / दिन</strong></span>
+      <span>आवेदन तिथि: 2 दिन पहले</span>
+    </div>
+  </div>
+
+  <!-- Card 2: Hired -->
+  <div class="app-card" data-status="hired">
+    <div class="app-header">
+      <div>
+        <div class="app-title">🔒 सुरक्षा गार्ड</div>
+        <div class="app-company">🏢 सिक्योरइंडिया सर्विसेज • हैदराबाद</div>
+      </div>
+      <span class="status-pill status-hired">✓ नियुक्त (Hired)</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step done"><div class="pipe-circle">✓</div><span class="pipe-label">आवेदित</span></div>
+      <div class="pipe-step done"><div class="pipe-circle">✓</div><span class="pipe-label">देखा गया</span></div>
+      <div class="pipe-step done"><div class="pipe-circle">✓</div><span class="pipe-label">साक्षात्कार</span></div>
+      <div class="pipe-step done"><div class="pipe-circle">🏆</div><span class="pipe-label">नियुक्त ✓</span></div>
+    </div>
+
+    <div class="hired-banner">
+      🎉 बधाई हो! आपको इस पद के लिए नियुक्त कर लिया गया है। कार्य आरंभ: 1 सितंबर 2026.
+    </div>
+
+    <div class="app-footer">
+      <span>वेतन: <strong>₹16,500 / माह</strong></span>
+      <span>नियुक्ति तिथि: आज</span>
+    </div>
+  </div>
+
+  <!-- Card 3: Viewed -->
+  <div class="app-card" data-status="pending">
+    <div class="app-header">
+      <div>
+        <div class="app-title">🔧 आवासीय प्लंबिंग विशेषज्ञ</div>
+        <div class="app-company">🏢 मेट्रो हाउसिंग सोसाइटी • मुंबई</div>
+      </div>
+      <span class="status-pill status-viewed">नियोक्ता ने देखा (Viewed)</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step done"><div class="pipe-circle">✓</div><span class="pipe-label">आवेदित</span></div>
+      <div class="pipe-step current"><div class="pipe-circle">👁️</div><span class="pipe-label">देखा गया</span></div>
+      <div class="pipe-step"><div class="pipe-circle">📅</div><span class="pipe-label">साक्षात्कार</span></div>
+      <div class="pipe-step"><div class="pipe-circle">🏁</div><span class="pipe-label">नियुक्ति</span></div>
+    </div>
+
+    <div class="app-footer">
+      <span>वेतन: <strong>₹24,000 / माह</strong></span>
+      <span>आवेदन तिथि: 4 दिन पहले</span>
+    </div>
+  </div>
+
+  <!-- Card 4: Applied -->
+  <div class="app-card" data-status="pending">
+    <div class="app-header">
+      <div>
+        <div class="app-title">🚗 कमर्शियल ड्राइवर</div>
+        <div class="app-company">🏢 फास्ट डिलीवरी • बेंगलुरु</div>
+      </div>
+      <span class="status-pill status-pending">समीक्षाधीन (Under Review)</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step current"><div class="pipe-circle">📝</div><span class="pipe-label">आवेदित</span></div>
+      <div class="pipe-step"><div class="pipe-circle">👁️</div><span class="pipe-label">देखा गया</span></div>
+      <div class="pipe-step"><div class="pipe-circle">📅</div><span class="pipe-label">साक्षात्कार</span></div>
+      <div class="pipe-step"><div class="pipe-circle">🏁</div><span class="pipe-label">नियुक्ति</span></div>
+    </div>
+
+    <div class="app-footer">
+      <span>वेतन: <strong>₹750 / दिन</strong></span>
+      <span>आवेदन तिथि: 5 दिन पहले</span>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">
+    <span class="nav-item-icon">🏠</span>
+    <span>होम</span>
+  </a>
+  <a href="jobs.html" class="nav-item">
+    <span class="nav-item-icon">🔍</span>
+    <span>काम खोजें</span>
+  </a>
+  <a href="applications.html" class="nav-item active">
+    <span class="nav-item-icon">📋</span>
+    <span>आवेदन</span>
+  </a>
+  <a href="profile.html" class="nav-item">
+    <span class="nav-item-icon">👤</span>
+    <span>प्रोफाइल ID</span>
+  </a>
+</div>
+
+<script src="../../js/translations.js"></script>
+<script>
+function filterTab(btn, status) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.querySelectorAll('.app-card').forEach(card => {
+    if (status === 'all' || card.dataset.status === status) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+});
+</script>
+</body>
+</html>
