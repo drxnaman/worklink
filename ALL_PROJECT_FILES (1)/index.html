@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WorkLink — Professional Gateway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hound-orange:#FF7500; --hound-orange-hover:#E66800; --hound-orange-50:#FFF7ED;
+  --hound-yellow:#FED301; --hound-yellow-hover:#ECC400;
+  --dark:#0F172A; --dark-muted:#334155; --gray-500:#64748B; --gray-200:#E2E8F0; --gray-100:#F1F5F9;
+  --bg:#F8FAFC; --surface:#FFFFFF;
+  --ok:#059669; --ok-50:#ECFDF5;
+  --r-sm:8px; --r:14px; --r-lg:20px;
+  --sh-sm:0 1px 2px rgba(0,0,0,0.05);
+  --sh:0 4px 14px -2px rgba(15,23,42,0.08), 0 2px 6px -1px rgba(15,23,42,0.04);
+  --sh-lg:0 20px 35px -6px rgba(15,23,42,0.12);
+  --font:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0; min-height:100vh}
+body{
+  font-family:var(--font); color:var(--dark); background:var(--bg);
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.2}
+h1{font-size:clamp(26px,4vw,36px)}
+h2{font-size:20px}
+p{margin:0}
+button{font:inherit; color:inherit; cursor:pointer}
+svg{display:block}
+
+/* TOP MOVING MARQUEE TICKER */
+.ticker-bar{
+  background:#0F172A; color:#fff; overflow:hidden; white-space:nowrap;
+  height:38px; display:flex; align-items:center; border-bottom:1px solid #1E293B;
+  font-size:13px; font-weight:700; position:sticky; top:0; z-index:300;
+}
+.ticker-track{
+  display:inline-flex; align-items:center; animation:marquee 32s linear infinite;
+}
+.ticker-bar:hover .ticker-track{animation-play-state:paused}
+.ticker-item{display:inline-flex; align-items:center; gap:8px; padding:0 28px}
+.ticker-item span.highlight{color:#FED301}
+.ticker-item span.dot{color:#FF7500; font-size:16px}
+@keyframes marquee{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* Header */
+header.top-nav{background:#fff; border-bottom:1px solid var(--gray-200); padding:14px 24px}
+.nav-in{max-width:1040px; margin:0 auto; display:flex; align-items:center; justify-content:space-between}
+.brand{display:flex; align-items:center; gap:10px; font-weight:850; font-size:20px; text-decoration:none; color:var(--dark); letter-spacing:-.03em}
+.brand-icon{
+  width:34px; height:34px; border-radius:10px; background:var(--hound-orange);
+  display:grid; place-items:center; color:#fff; font-size:17px;
+}
+.helpline-link{
+  display:inline-flex; align-items:center; gap:6px; font-size:13.5px; font-weight:800;
+  color:var(--hound-orange); text-decoration:none; background:var(--hound-orange-50);
+  padding:6px 14px; border-radius:20px; border:1px solid #FED7AA;
+}
+
+/* Main Container */
+main{max-width:960px; margin:0 auto; padding:54px 20px 64px; width:100%}
+.hero-head{text-align:center; max-width:540px; margin:0 auto 38px}
+.lead{font-size:16px; color:var(--gray-500); margin-top:8px}
+
+/* Role Selection Cards */
+.portal-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px}
+.portal-card{
+  background:var(--surface); border:2px solid var(--gray-200); border-radius:var(--r-lg);
+  padding:32px 28px; box-shadow:var(--sh); display:flex; flex-direction:column; justify-content:space-between;
+  transition:all .2s ease; position:relative; cursor:pointer; text-align:left;
+}
+.portal-card:hover{transform:translateY(-4px); box-shadow:var(--sh-lg)}
+.portal-card.employer:hover{border-color:var(--hound-orange)}
+.portal-card.worker:hover{border-color:var(--dark)}
+
+/* Emblems / Logos */
+.card-emblem{
+  width:64px; height:64px; border-radius:16px; display:grid; place-items:center;
+  margin-bottom:20px; position:relative;
+}
+.card-emblem.emp{
+  background:linear-gradient(135deg,#FFF7ED 0%,#FFEDD5 100%);
+  color:var(--hound-orange); border:1.5px solid #FED7AA;
+}
+.card-emblem.wrk{
+  background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+  color:var(--hound-yellow); border:1.5px solid #334155;
+}
+.emblem-badge{
+  position:absolute; bottom:-6px; right:-6px; background:var(--ok); color:#fff;
+  font-size:10px; font-weight:800; padding:2px 6px; border-radius:999px;
+}
+
+.role-tag{
+  display:inline-block; font-size:12px; font-weight:800; text-transform:uppercase;
+  letter-spacing:.05em; margin-bottom:6px;
+}
+.role-tag.emp{color:var(--hound-orange)}
+.role-tag.wrk{color:var(--gray-500)}
+
+.portal-points{margin:16px 0 24px; display:grid; gap:8px; font-size:14px; color:var(--dark-muted)}
+.portal-points div{display:flex; align-items:center; gap:8px}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:48px; padding:0 20px; border-radius:var(--r-sm);
+  border:none; font-weight:750; font-size:15px; text-decoration:none;
+  transition:all .15s ease; width:100%;
+}
+.btn:active{transform:translateY(1px)}
+.btn.emp{background:var(--hound-orange); color:#fff; box-shadow:0 3px 10px rgba(255,117,0,0.25)}
+.btn.emp:hover{background:var(--hound-orange-hover)}
+.btn.wrk{background:var(--dark); color:#fff; box-shadow:0 3px 10px rgba(15,23,42,0.2)}
+.btn.wrk:hover{background:#1E293B}
+
+/* MODAL OVERLAY */
+.auth-modal-overlay{
+  position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:500;
+  display:none; place-items:center; padding:20px; backdrop-filter:blur(5px);
+}
+.auth-modal-overlay.open{display:grid}
+.auth-modal-box{
+  background:#fff; border-radius:var(--r-lg); max-width:440px; width:100%;
+  box-shadow:var(--sh-lg); border:1.5px solid var(--gray-200); position:relative; overflow:hidden;
+  animation:in .2s ease;
+}
+@keyframes in{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+.modal-header{
+  padding:20px 24px 14px; border-bottom:1px solid var(--gray-200);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.close-modal-btn{
+  background:none; border:none; font-size:22px; cursor:pointer; color:var(--gray-500); padding:2px;
+}
+.close-modal-btn:hover{color:var(--dark)}
+
+.modal-body{padding:20px 24px 24px}
+
+.auth-nav-tabs{
+  display:flex; background:var(--gray-100); border-radius:var(--r-sm); padding:4px; margin-bottom:18px;
+}
+.auth-nav-tab{
+  flex:1; padding:8px; border:none; border-radius:6px; font-size:13.5px; font-weight:750;
+  background:transparent; color:var(--gray-500); transition:all .15s; text-align:center;
+}
+.auth-nav-tab.active{background:#fff; color:var(--dark); box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+.form-group{margin-bottom:13px}
+label{display:block; font-size:13px; font-weight:700; margin-bottom:5px; color:var(--dark)}
+input,select{
+  width:100%; min-height:42px; padding:9px 12px; font:inherit; font-size:14px;
+  border:1.5px solid var(--gray-200); border-radius:var(--r-sm); background:#fff;
+}
+input:focus,select:focus{outline:none; border-color:var(--hound-orange); box-shadow:0 0 0 3px rgba(255,117,0,0.12)}
+
+.demo-box{
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--gray-200); text-align:center;
+}
+.demo-btn{
+  width:100%; padding:9px; border-radius:6px; border:1px dashed var(--gray-200);
+  background:var(--gray-100); font-size:13px; font-weight:700; color:var(--dark-muted);
+  cursor:pointer; transition:all .15s;
+}
+.demo-btn:hover{background:#fff; border-color:var(--hound-orange); color:var(--hound-orange)}
+
+/* Footer */
+footer{
+  background:#0B0F19; color:#9CA3AF; padding:24px 20px; text-align:center; font-size:13px;
+  border-top:1px solid #1E293B;
+}
+
+@media(max-width:740px){
+  .portal-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- CONTINUOUS MOVING TICKER (FACTS & HELPLINE) -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item">📞 <span class="highlight">24/7 Helpline: 1800-419-1351</span> (Toll-Free Dispatch)</div>
+    <div class="ticker-item"><span class="dot">●</span> ⚡ Average Arrival: <span class="highlight">~28 Mins</span> across Delhi NCR</div>
+    <div class="ticker-item"><span class="dot">●</span> 🛡️ <span class="highlight">100% Escrow Protection:</span> Pay only after job verification</div>
+    <div class="ticker-item"><span class="dot">●</span> 🐾 Verified Network: <span class="highlight">2,400+ Background Checked</span> Technicians</div>
+    <div class="ticker-item"><span class="dot">●</span> 💳 Transparent Platform: <span class="highlight">3% Employer Fee &middot; 10% Provider Fee</span></div>
+    <div class="ticker-item"><span class="dot">●</span> 🟢 System Status: <span class="highlight">Live Dispatch Active</span></div>
+
+    <!-- Duplicate for smooth infinite loop -->
+    <div class="ticker-item">📞 <span class="highlight">24/7 Helpline: 1800-419-1351</span> (Toll-Free Dispatch)</div>
+    <div class="ticker-item"><span class="dot">●</span> ⚡ Average Arrival: <span class="highlight">~28 Mins</span> across Delhi NCR</div>
+    <div class="ticker-item"><span class="dot">●</span> 🛡️ <span class="highlight">100% Escrow Protection:</span> Pay only after job verification</div>
+    <div class="ticker-item"><span class="dot">●</span> 🐾 Verified Network: <span class="highlight">2,400+ Background Checked</span> Technicians</div>
+    <div class="ticker-item"><span class="dot">●</span> 💳 Transparent Platform: <span class="highlight">3% Employer Fee &middot; 10% Provider Fee</span></div>
+    <div class="ticker-item"><span class="dot">●</span> 🟢 System Status: <span class="highlight">Live Dispatch Active</span></div>
+  </div>
+</div>
+
+<header class="top-nav">
+  <div class="nav-in">
+    <a href="#" class="brand">
+      <span class="brand-icon">🐾</span> WorkLink
+    </a>
+    <a href="tel:18004191351" class="helpline-link">
+      📞 Instant Help: 1800-419-1351
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="hero-head">
+    <h1>Choose Your Workspace</h1>
+    <p class="lead">Select either Employer or Worker to sign in or register.</p>
+  </div>
+
+  <!-- ONLY TWO CLEAN CARDS ON THE PAGE -->
+  <div class="portal-grid">
+    <!-- EMPLOYER CARD -->
+    <div class="portal-card employer" onclick="openAuthModal('employer')">
+      <div>
+        <div class="card-emblem emp">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span class="emblem-badge">✓</span>
+        </div>
+        <span class="role-tag emp">Homeowners &amp; Businesses</span>
+        <h2>Employer Portal</h2>
+        <div class="portal-points">
+          <div><strong style="color:var(--hound-orange)">✓</strong> ⚡ Quick Fix emergency dispatch in ~30 mins</div>
+          <div><strong style="color:var(--hound-orange)">✓</strong> 💬 Direct in-app rate negotiation &amp; counter-offers</div>
+          <div><strong style="color:var(--hound-orange)">✓</strong> 🛡️ 100% Escrow protected payments</div>
+        </div>
+      </div>
+      <button class="btn emp">Enter Employer Portal →</button>
+    </div>
+
+    <!-- WORKER CARD -->
+    <div class="portal-card worker" onclick="openAuthModal('worker')">
+      <div>
+        <div class="card-emblem wrk">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          <span class="emblem-badge">Pro</span>
+        </div>
+        <span class="role-tag wrk">Certified Trade Specialists</span>
+        <h2>Worker Portal</h2>
+        <div class="portal-points">
+          <div><strong style="color:var(--dark)">✓</strong> 📍 Live job requests &amp; proximity radar</div>
+          <div><strong style="color:var(--dark)">✓</strong> 📈 4-stage job progress stepper</div>
+          <div><strong style="color:var(--dark)">✓</strong> 🏦 Instant bank payout with 10% platform fee</div>
+        </div>
+      </div>
+      <button class="btn wrk">Enter Worker Portal →</button>
+    </div>
+  </div>
+</main>
+
+<!-- AUTH MODAL: SIGN IN & NEW USER SIGN UP -->
+<div class="auth-modal-overlay" id="authModalOverlay" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal-box">
+    <div class="modal-header">
+      <div>
+        <h3 id="modalTitle" style="font-size:18px">Employer Sign In</h3>
+        <p id="modalSub" class="muted" style="font-size:12.5px">Access your active dashboard</p>
+      </div>
+      <button class="close-modal-btn" onclick="closeAuthModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="auth-nav-tabs">
+        <button class="auth-nav-tab active" id="modeSignIn" onclick="setAuthMode('signin')">Sign In</button>
+        <button class="auth-nav-tab" id="modeSignUp" onclick="setAuthMode('signup')">New User Sign Up</button>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <form id="formSignIn" onsubmit="handleSignInSubmit(event)">
+        <div class="form-group">
+          <label for="inpSignEmail">Email or Mobile Number</label>
+          <input type="text" id="inpSignEmail" placeholder="e.g. priya@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label for="inpSignPass">Password</label>
+          <input type="password" id="inpSignPass" value="••••••••" required>
+        </div>
+        <button type="submit" class="btn emp" id="modalActionBtn">Sign In →</button>
+
+        <div class="demo-box">
+          <button type="button" class="demo-btn" id="demoActionBtn" onclick="quickDemoLogin()">
+            ⚡ Instant 1-Click Demo Login
+          </button>
+        </div>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="formSignUp" style="display:none" onsubmit="handleSignUpSubmit(event)">
+        <div class="form-group">
+          <label for="inpUpName">Full Name</label>
+          <input type="text" id="inpUpName" placeholder="e.g. Rahul Sharma" required>
+        </div>
+        <div class="form-group">
+          <label for="inpUpEmail">Email or Mobile Number</label>
+          <input type="text" id="inpUpEmail" placeholder="e.g. specialist@gmail.com" required>
+        </div>
+        <div class="form-group" id="workerTradeGroup" style="display:none">
+          <label for="inpUpTrade">Primary Trade / Skill</label>
+          <select id="inpUpTrade">
+            <option>Plumbing Specialist</option>
+            <option>Electrical Technician</option>
+            <option>Carpentry &amp; Furniture</option>
+            <option>AC &amp; HVAC Technician</option>
+            <option>Painting &amp; Finishing</option>
+            <option>Deep Cleaning &amp; Sanitization</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="inpUpPass">Create Password</label>
+          <input type="password" id="inpUpPass" placeholder="Min 6 characters" required>
+        </div>
+        <button type="submit" class="btn emp" id="modalSignUpBtn">Create Account &amp; Enter →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:1040px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <span>© 2026 WorkLink Technologies. All rights reserved.</span>
+    <span>🔒 256-Bit Escrow &middot; 24/7 Helpline: 1800-419-1351</span>
+  </div>
+</footer>
+
+<script>
+let targetRole = 'employer'; // 'employer' or 'worker'
+let authMode = 'signin';     // 'signin' or 'signup'
+
+function openAuthModal(role){
+  targetRole = role;
+  const overlay = document.getElementById('authModalOverlay');
+  const title = document.getElementById('modalTitle');
+  const sub = document.getElementById('modalSub');
+  const actionBtn = document.getElementById('modalActionBtn');
+  const signUpBtn = document.getElementById('modalSignUpBtn');
+  const demoBtn = document.getElementById('demoActionBtn');
+  const tradeGroup = document.getElementById('workerTradeGroup');
+  const emailInp = document.getElementById('inpSignEmail');
+
+  if(role === 'employer'){
+    title.textContent = 'Employer Access';
+    sub.textContent = 'Sign in or sign up to book home repairs';
+    actionBtn.className = 'btn emp';
+    actionBtn.textContent = 'Sign In to Employer Portal →';
+    signUpBtn.className = 'btn emp';
+    signUpBtn.textContent = 'Create Employer Account →';
+    demoBtn.textContent = '⚡ Demo Login as Priya (Employer)';
+    tradeGroup.style.display = 'none';
+    emailInp.value = 'priya.sharma@gmail.com';
+  } else {
+    title.textContent = 'Trade Specialist Access';
+    sub.textContent = 'Sign in or sign up to accept repair jobs';
+    actionBtn.className = 'btn wrk';
+    actionBtn.textContent = 'Sign In to Worker Portal →';
+    signUpBtn.className = 'btn wrk';
+    signUpBtn.textContent = 'Register as Trade Specialist →';
+    demoBtn.textContent = '⚡ Demo Login: Worker Portal';
+    tradeGroup.style.display = 'block';
+    emailInp.value = 'specialist@worklink.in';
+  }
+
+  setAuthMode('signin');
+  overlay.classList.add('open');
+}
+
+function closeAuthModal(){
+  document.getElementById('authModalOverlay').classList.remove('open');
+}
+
+function setAuthMode(mode){
+  authMode = mode;
+  const tabIn = document.getElementById('modeSignIn');
+  const tabUp = document.getElementById('modeSignUp');
+  const formIn = document.getElementById('formSignIn');
+  const formUp = document.getElementById('formSignUp');
+
+  if(mode === 'signin'){
+    tabIn.classList.add('active');
+    tabUp.classList.remove('active');
+    formIn.style.display = 'block';
+    formUp.style.display = 'none';
+  } else {
+    tabUp.classList.add('active');
+    tabIn.classList.remove('active');
+    formIn.style.display = 'none';
+    formUp.style.display = 'block';
+  }
+}
+
+function handleSignInSubmit(e){
+  e.preventDefault();
+  redirectToPortal();
+}
+
+function handleSignUpSubmit(e){
+  e.preventDefault();
+  redirectToPortal();
+}
+
+function quickDemoLogin(){
+  redirectToPortal();
+}
+
+function redirectToPortal(){
+  if(targetRole === 'employer'){
+    window.location.href = './worklink/';
+  } else {
+    window.location.href = './worklink-worker/';
+  }
+}
+</script>
+</body>
+</html>

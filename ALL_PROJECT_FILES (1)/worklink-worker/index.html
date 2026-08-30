@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WorkLink Pro — Worker Operations & Payout Dashboard</title>
+<meta name="description" content="Professional operations dashboard for verified trade specialists on WorkLink. Manage dispatch, jobs, chat, and bank payouts.">
+<style>
+:root{
+  --brand:#0F172A; --brand-light:#1E293B; --brand-50:#F8FAFC;
+  --accent:#E65100; --accent-600:#C2410C; --accent-50:#FFF7ED;
+  --blue:#2563EB; --blue-50:#EFF6FF;
+  --ok:#059669; --ok-50:#ECFDF5;
+  --urgent:#DC2626; --urgent-50:#FEF2F2;
+  --amber:#D97706; --amber-50:#FFFBEB;
+  --ink-900:#0F172A; --ink-700:#334155; --ink-500:#64748B; --ink-300:#94A3B8;
+  --line:#E2E8F0; --line-strong:#CBD5E1;
+  --bg:#F8FAFC; --surface:#FFFFFF;
+  --r-sm:6px; --r:10px; --r-lg:16px;
+  --sh-sm:0 1px 2px 0 rgba(0,0,0,0.05);
+  --sh:0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  --sh-lg:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0; min-height:100vh}
+body{
+  font-family:var(--font); color:var(--ink-900); background:var(--bg);
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; letter-spacing:-.025em; line-height:1.25; font-weight:700}
+h1{font-size:clamp(22px,3vw,28px)}
+h2{font-size:18px}
+h3{font-size:16px}
+p{margin:0}
+button{font:inherit; color:inherit; cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
+
+/* Top App Bar */
+header.app-bar{
+  background:var(--brand); color:#fff; position:sticky; top:0; z-index:100;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.app-bar-in{
+  max-width:1160px; margin:0 auto; padding:0 20px; height:60px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff; font-weight:700; font-size:17px}
+.brand-badge{
+  background:linear-gradient(135deg,var(--accent),#EA580C); font-size:11px;
+  font-weight:800; padding:2px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:.06em;
+}
+.nav-tabs{display:flex; align-items:center; gap:4px}
+.nav-btn{
+  background:none; border:none; color:var(--ink-300); font-weight:600; font-size:14px;
+  padding:8px 12px; border-radius:var(--r-sm); transition:all .15s;
+}
+.nav-btn:hover{color:#fff; background:rgba(255,255,255,.08)}
+.nav-btn.active{color:#fff; background:rgba(255,255,255,.15)}
+.nav-btn .pill{
+  background:var(--accent); color:#fff; font-size:11px; padding:1px 6px; border-radius:10px; margin-left:6px;
+}
+.user-profile-badge{
+  display:flex; align-items:center; gap:10px; padding:4px 10px 4px 4px;
+  border-radius:30px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+}
+.user-av{
+  width:32px; height:32px; border-radius:50%; background:var(--accent);
+  display:grid; place-items:center; font-size:13px; font-weight:700; color:#fff;
+}
+.switch-link{
+  font-size:13px; color:#94A3B8; text-decoration:none; display:flex; align-items:center; gap:6px;
+  padding:6px 12px; border-radius:6px; border:1px solid rgba(255,255,255,.15);
+}
+.switch-link:hover{color:#fff; border-color:#fff}
+
+/* Main Layout */
+.layout{max-width:1160px; margin:0 auto; padding:24px 20px 80px}
+
+/* Live Dispatch Banner */
+.dispatch-bar{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+  box-shadow:var(--sh-sm); margin-bottom:24px; flex-wrap:wrap; gap:16px;
+}
+.dispatch-status{display:flex; align-items:center; gap:12px}
+.live-pulse{
+  width:12px; height:12px; border-radius:50%; background:var(--ok);
+  position:relative; box-shadow:0 0 0 3px rgba(5,150,105,.2);
+}
+.live-pulse.offline{background:var(--ink-300); box-shadow:none}
+.toggle-switch{position:relative; width:48px; height:26px; cursor:pointer}
+.toggle-switch input{opacity:0; width:0; height:0}
+.toggle-slider{
+  position:absolute; inset:0; background:#CBD5E1; border-radius:30px; transition:.2s;
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--ok)}
+.toggle-slider::after{
+  content:""; position:absolute; height:20px; width:20px; left:3px; bottom:3px;
+  background:#fff; border-radius:50%; transition:.2s; box-shadow:var(--sh-sm);
+}
+.toggle-switch input:checked + .toggle-slider::after{transform:translateX(22px)}
+
+/* KPI Metrics Grid */
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-bottom:28px}
+.kpi-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:20px; box-shadow:var(--sh-sm); transition:border-color .15s;
+}
+.kpi-card:hover{border-color:var(--line-strong)}
+.kpi-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+.kpi-label{font-size:13px; font-weight:600; color:var(--ink-500); text-transform:uppercase; letter-spacing:.05em}
+.kpi-val{font-size:26px; font-weight:800; color:var(--ink-900); line-height:1}
+.kpi-sub{font-size:13px; color:var(--ink-500); margin-top:8px; display:flex; align-items:center; gap:6px}
+.kpi-sub.up{color:var(--ok)}
+
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  height:40px; padding:0 16px; border-radius:var(--r-sm);
+  font-weight:600; font-size:14px; border:1px solid transparent; text-decoration:none;
+  transition:all .15s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--brand); color:#fff}
+.btn.primary:hover{background:var(--brand-light)}
+.btn.accent{background:var(--accent); color:#fff}
+.btn.accent:hover{background:var(--accent-600)}
+.btn.secondary{background:var(--surface); color:var(--ink-900); border-color:var(--line-strong); box-shadow:var(--sh-sm)}
+.btn.secondary:hover{background:#F8FAFC}
+.btn.ok{background:var(--ok); color:#fff}
+.btn.ok:hover{background:#047857}
+.btn.urgent{background:var(--urgent); color:#fff}
+.btn.urgent:hover{background:#B91C1C}
+.btn.sm{height:32px; padding:0 12px; font-size:13px}
+.btn.block{width:100%}
+
+/* Badges */
+.badge{
+  display:inline-flex; align-items:center; gap:5px; padding:3px 8px;
+  border-radius:6px; font-size:12px; font-weight:600; border:1px solid transparent;
+}
+.badge.ok{background:var(--ok-50); color:var(--ok); border-color:#A7F3D0}
+.badge.blue{background:var(--blue-50); color:var(--blue); border-color:#BFDBFE}
+.badge.urgent{background:var(--urgent-50); color:var(--urgent); border-color:#FECACA}
+.badge.amber{background:var(--amber-50); color:var(--amber); border-color:#FDE68A}
+.badge.slate{background:#F1F5F9; color:var(--ink-700); border-color:var(--line)}
+
+/* Section Tabs */
+.tabs{display:flex; gap:6px; border-bottom:1px solid var(--line); margin-bottom:20px}
+.tab{
+  padding:10px 16px; border:none; background:none; font-size:14px; font-weight:600;
+  color:var(--ink-500); border-bottom:2px solid transparent; cursor:pointer;
+}
+.tab:hover{color:var(--ink-900)}
+.tab.active{color:var(--accent); border-bottom-color:var(--accent)}
+
+/* Job Cards */
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:20px; box-shadow:var(--sh-sm); margin-bottom:14px;
+}
+.job-head{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:12px}
+.job-title{font-size:16px; font-weight:700}
+.job-cust{display:flex; align-items:center; gap:10px; margin:8px 0}
+.cust-av{
+  width:30px; height:30px; border-radius:50%; display:grid; place-items:center;
+  color:#fff; font-size:12px; font-weight:700;
+}
+.job-details{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px;
+  background:var(--bg); padding:12px 16px; border-radius:var(--r-sm); margin:14px 0;
+  font-size:13.5px;
+}
+.detail-item span{display:block; font-size:12px; color:var(--ink-500); margin-bottom:2px}
+.detail-item b{color:var(--ink-900)}
+
+/* Fee Breakdown Box */
+.payout-box{
+  background:var(--ok-50); border:1px solid #A7F3D0; border-radius:var(--r-sm);
+  padding:10px 14px; display:flex; justify-content:space-between; align-items:center;
+  font-size:13.5px; margin-bottom:14px;
+}
+.payout-box .net{font-size:16px; font-weight:800; color:var(--ok)}
+
+/* Job Actions */
+.card-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+/* Stepper for Active Job */
+.stepper{display:flex; margin:16px 0 20px; gap:8px}
+.step{flex:1; height:6px; background:#E2E8F0; border-radius:4px}
+.step.done{background:var(--ok)}
+.step.current{background:var(--accent)}
+
+/* Chat View */
+.chat-wrap{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  display:flex; flex-direction:column; height:65vh; min-height:460px; box-shadow:var(--sh);
+}
+.chat-head{padding:14px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+.chat-msgs{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:#F8FAFC}
+.chat-msg{max-width:80%; display:flex; flex-direction:column; gap:3px}
+.chat-msg.cust{align-self:flex-start}
+.chat-msg.worker{align-self:flex-end}
+.bubble{padding:10px 14px; border-radius:12px; font-size:14px; line-height:1.45}
+.chat-msg.cust .bubble{background:#fff; border:1px solid var(--line); color:var(--ink-900); border-bottom-left-radius:3px}
+.chat-msg.worker .bubble{background:var(--brand); color:#fff; border-bottom-right-radius:3px}
+.chat-time{font-size:11px; color:var(--ink-500)}
+.chat-msg.worker .chat-time{text-align:right}
+.chat-replies{padding:10px 16px; display:flex; gap:6px; overflow-x:auto; background:#fff; border-top:1px solid var(--line)}
+.reply-pill{
+  white-space:nowrap; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:600;
+  border:1px solid var(--brand); color:var(--brand); background:var(--brand-50);
+}
+.reply-pill:hover{background:var(--brand); color:#fff}
+.reply-pill.deal{border-color:var(--ok); color:var(--ok); background:var(--ok-50)}
+.reply-pill.deal:hover{background:var(--ok); color:#fff}
+.chat-input-bar{display:flex; gap:10px; padding:12px 16px; background:#fff; border-top:1px solid var(--line)}
+.chat-input-bar input{flex:1; min-height:40px; padding:8px 12px; border:1px solid var(--line-strong); border-radius:6px}
+
+/* Ledger Table */
+.ledger-table{width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+.ledger-table th{background:#F8FAFC; text-align:left; padding:12px 16px; font-size:12.5px; font-weight:700; color:var(--ink-500); border-bottom:1px solid var(--line)}
+.ledger-table td{padding:14px 16px; border-bottom:1px solid var(--line); font-size:14px}
+.ledger-table tr:last-child td{border-bottom:none}
+
+/* Screens */
+[data-view]{display:none}
+[data-view].active{display:block; animation:fade .15s ease}
+@keyframes fade{from{opacity:0; transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Toast */
+#toast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:999;
+  padding:10px 20px; border-radius:999px; background:var(--brand); color:#fff;
+  font-size:14px; font-weight:600; box-shadow:var(--sh-lg); display:none;
+}
+
+/* Modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(15,23,42,.6); z-index:200;
+  display:none; place-items:center; padding:20px; backdrop-filter:blur(3px);
+}
+.modal-overlay.open{display:grid}
+.modal-box{
+  background:#fff; border-radius:var(--r); max-width:440px; width:100%; padding:24px;
+  box-shadow:var(--sh-lg); border:1px solid var(--line);
+}
+
+@media(max-width:768px){
+  .nav-tabs{display:none}
+  .dispatch-bar{flex-direction:column; align-items:flex-start}
+}
+
+/* TOP MOVING MARQUEE TICKER */
+.ticker-bar{
+  background:#0F172A; color:#fff; overflow:hidden; white-space:nowrap;
+  height:38px; display:flex; align-items:center; border-bottom:1px solid #1E293B;
+  font-size:13px; font-weight:700; position:sticky; top:0; z-index:300;
+}
+.ticker-track{
+  display:inline-flex; align-items:center; animation:marquee 32s linear infinite;
+}
+.ticker-bar:hover .ticker-track{animation-play-state:paused}
+.ticker-item{display:inline-flex; align-items:center; gap:8px; padding:0 28px}
+.ticker-item span.highlight{color:#FED301}
+.ticker-item span.dot{color:#FF7500; font-size:16px}
+@keyframes marquee{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+</style>
+</head>
+<body>
+
+<!-- CONTINUOUS MOVING TICKER (FACTS & HELPLINE) -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item">📞 <span class="highlight">24/7 Helpline: 1800-419-1351</span> (Toll-Free Dispatch)</div>
+    <div class="ticker-item"><span class="dot">●</span> ⚡ Average Arrival: <span class="highlight">~28 Mins</span> across Delhi NCR</div>
+    <div class="ticker-item"><span class="dot">●</span> 🛡️ <span class="highlight">100% Escrow Protection:</span> Pay only after job verification</div>
+    <div class="ticker-item"><span class="dot">●</span> 🐾 Verified Network: <span class="highlight">2,400+ Background Checked</span> Technicians</div>
+    <div class="ticker-item"><span class="dot">●</span> 💳 Transparent Platform: <span class="highlight">3% Employer Fee &middot; 10% Provider Fee</span></div>
+    <div class="ticker-item"><span class="dot">●</span> 🟢 System Status: <span class="highlight">Live Dispatch Active</span></div>
+
+    <!-- Duplicate for smooth infinite loop -->
+    <div class="ticker-item">📞 <span class="highlight">24/7 Helpline: 1800-419-1351</span> (Toll-Free Dispatch)</div>
+    <div class="ticker-item"><span class="dot">●</span> ⚡ Average Arrival: <span class="highlight">~28 Mins</span> across Delhi NCR</div>
+    <div class="ticker-item"><span class="dot">●</span> 🛡️ <span class="highlight">100% Escrow Protection:</span> Pay only after job verification</div>
+    <div class="ticker-item"><span class="dot">●</span> 🐾 Verified Network: <span class="highlight">2,400+ Background Checked</span> Technicians</div>
+    <div class="ticker-item"><span class="dot">●</span> 💳 Transparent Platform: <span class="highlight">3% Employer Fee &middot; 10% Provider Fee</span></div>
+    <div class="ticker-item"><span class="dot">●</span> 🟢 System Status: <span class="highlight">Live Dispatch Active</span></div>
+  </div>
+</div>
+
+
+<svg hidden>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 8V6a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6"/><circle cx="17" cy="13.5" r="1.2"/></symbol>
+</svg>
+
+<!-- Top Bar -->
+<header class="app-bar">
+  <div class="app-bar-in">
+    <div style="display:flex;align-items:center;gap:18px">
+      <a href="#" class="brand" onclick="goView('dispatch')">
+        WorkLink <span class="brand-badge">Pro Operations</span>
+      </a>
+      <div class="nav-tabs">
+        <button class="nav-btn active" data-vbtn="dispatch" onclick="goView('dispatch')">Dispatch Hub <span class="pill" id="pillCount">3</span></button>
+        <button class="nav-btn" data-vbtn="active" onclick="goView('active')">Active Jobs</button>
+        <button class="nav-btn" data-vbtn="earnings" onclick="goView('earnings')">Earnings &amp; Payouts</button>
+        <button class="nav-btn" data-vbtn="profile" onclick="goView('profile')">Credentials &amp; Profile</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a href="../worklink/" class="switch-link" title="Open Employer Portal">⇄ Switch to Employer Mode</a>
+      <div class="user-profile-badge">
+        <span class="user-av" style="background:#0F172A;color:#FED301">PRO</span>
+        <span style="font-size:13.5px;font-weight:600" id="workerHeaderName">Verified Specialist</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- DISPATCH HUB -->
+  <section data-view="dispatch" class="active">
+    <div class="dispatch-bar">
+      <div class="dispatch-status">
+        <span class="live-pulse" id="pulseIndicator"></span>
+        <div>
+          <b id="statusLabel">Live Dispatch: Online &amp; Ready for Jobs</b>
+          <p class="muted" id="statusSub">Accepting emergency Quick Fixes &amp; scheduled visits across South Delhi</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font-size:13.5px;font-weight:600;color:var(--ink-700)">Availability Status:</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="availToggle" checked onchange="handleAvailChange(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 4 KPI PERFORMANCE METRICS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top"><span class="kpi-label">Available Balance</span><span class="badge ok">Ready</span></div>
+        <div class="kpi-val" id="kpiBal">₹4,850</div>
+        <div class="kpi-sub up"><span>↑ Net withdrawable after 10% fee</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><span class="kpi-label">This Month Gross</span><span class="badge blue">August</span></div>
+        <div class="kpi-val">₹38,650</div>
+        <div class="kpi-sub"><span>31 completed service orders</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><span class="kpi-label">Quality Score</span><span class="badge ok">Top 5%</span></div>
+        <div class="kpi-val">4.9 ★</div>
+        <div class="kpi-sub"><span>212 verified customer reviews</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top"><span class="kpi-label">On-Time Arrival</span><span class="badge slate">Dispatch</span></div>
+        <div class="kpi-val">98.4%</div>
+        <div class="kpi-sub"><span>Avg response time: 5 mins</span></div>
+      </div>
+    </div>
+
+    <!-- JOB REQUEST FEED -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2>Incoming Job Requests (<span id="reqCount">3</span>)</h2>
+      <div style="font-size:13px;color:var(--ink-500)">Platform Fee: 10% auto-deducted upon completion</div>
+    </div>
+    <div id="requestCards"></div>
+  </section>
+
+  <!-- ACTIVE JOBS -->
+  <section data-view="active">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2>Active Work Orders</h2>
+      <span class="badge ok">Escrow Funded</span>
+    </div>
+    <div id="activeCards"></div>
+  </section>
+
+  <!-- NEGOTIATION CHAT -->
+  <section data-view="chat">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <button class="btn secondary sm" onclick="goView('dispatch')">← Back to Dispatch</button>
+      <h2>Direct Negotiation Chat</h2>
+    </div>
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="cust-av" id="chatCustAv" style="background:#1E293B">PS</div>
+          <div>
+            <b id="chatCustName">Priya Sharma</b>
+            <p class="muted" id="chatJobTopic" style="font-size:12.5px">Job: Kitchen sink leak · Offered: ₹450</p>
+          </div>
+        </div>
+        <span class="badge blue">Escrow Protected</span>
+      </div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-replies" id="chatReplies"></div>
+      <div class="chat-input-bar">
+        <input type="text" id="chatInp" placeholder="Type customized reply or counter offer...">
+        <button class="btn accent sm" onclick="sendWorkerMsg()"><svg width="15" height="15"><use href="#i-send"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- EARNINGS & SETTLEMENT -->
+  <section data-view="earnings">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div>
+        <h2>Earnings &amp; Bank Settlements</h2>
+        <p class="muted" style="margin-top:2px">Direct transfers to your verified bank account</p>
+      </div>
+      <button class="btn ok" onclick="openWithdrawModal()">🏦 Withdraw to Bank Account</button>
+    </div>
+
+    <!-- Summary Box -->
+    <div class="card" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:22px;margin-bottom:24px">
+      <div>
+        <span class="muted" style="font-size:13px">Withdrawable Net Balance</span>
+        <div style="font-size:30px;font-weight:800;color:var(--ok);margin:4px 0" id="earnBalText">₹4,850</div>
+        <span class="badge ok">Cleared for Transfer</span>
+      </div>
+      <div>
+        <span class="muted" style="font-size:13px">Linked Bank Account</span>
+        <div style="font-size:16px;font-weight:700;margin:6px 0">HDFC Bank ****4521</div>
+        <span style="font-size:12.5px;color:var(--ink-500)">IFSC: HDFC0001234 · Primary</span>
+      </div>
+      <div>
+        <span class="muted" style="font-size:13px">Platform Fee Structure</span>
+        <div style="font-size:16px;font-weight:700;margin:6px 0">10% Provider Fee</div>
+        <span style="font-size:12.5px;color:var(--ink-500)">Employer pays 3% · Fair trade model</span>
+      </div>
+    </div>
+
+    <h3>Settlement Ledger &amp; Transactions</h3>
+    <p class="muted" style="margin:4px 0 16px">Complete breakdown of gross billings, 10% fee deductions, and net credited payouts.</p>
+    <div style="overflow-x:auto">
+      <table class="ledger-table" id="ledgerTable">
+        <thead>
+          <tr>
+            <th>Order Ref</th>
+            <th>Customer &amp; Service</th>
+            <th>Date</th>
+            <th>Gross Billed</th>
+            <th>Platform Fee (10%)</th>
+            <th>Net Credited</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS & PROFILE -->
+  <section data-view="profile">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2>Professional Identity &amp; Credentials</h2>
+      <span class="badge ok"><svg width="14" height="14"><use href="#i-shield"/></svg> Level 3 Master Specialist</span>
+    </div>
+    <div class="card" style="padding:24px;margin-bottom:20px">
+      <div style="display:flex;gap:18px;align-items:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:#0F172A;display:grid;place-items:center;font-size:24px;font-weight:800;color:#FED301">PRO</div>
+        <div>
+          <h2 style="font-size:20px" id="workerProfileName">Verified Specialist</h2>
+          <p class="muted" style="margin:4px 0">Licensed Master Plumber &middot; 9 Years Field Experience &middot; Delhi NCR</p>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <span class="badge ok">✓ Aadhaar Verified</span>
+            <span class="badge ok">✓ Police Verification Clear</span>
+            <span class="badge blue">License: DL-2018-PL-9410</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--line);margin-top:20px;padding-top:20px">
+        <h3>Verified Skills</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+          <span class="badge slate">Pipeline Joint Welding</span>
+          <span class="badge slate">Drainage Jet Clearance</span>
+          <span class="badge slate">Geyser Installation &amp; Valves</span>
+          <span class="badge slate">Water Tank Sanitization</span>
+          <span class="badge slate">RO &amp; UV Fitting</span>
+          <span class="badge slate">High-Pressure Leak Repair</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- WITHDRAWAL MODAL -->
+<div class="modal-overlay" id="withdrawModal">
+  <div class="modal-box">
+    <h3 style="margin-bottom:4px">Instant Payout to Bank Account</h3>
+    <p class="muted" style="font-size:13.5px;margin-bottom:16px">Transfer withdrawable earnings directly to your verified bank account.</p>
+    <div style="background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:14px">
+      <span class="muted" style="font-size:12px">Destination Account</span>
+      <div style="font-weight:700;margin-top:2px">HDFC Bank ****4521</div>
+      <div style="font-size:12px;color:var(--ok);margin-top:2px">✓ IMPS Instant Transfer Enabled</div>
+    </div>
+    <div style="margin-bottom:18px">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">Amount to withdraw (₹)</label>
+      <input type="number" id="withdrawAmtInp" value="4850" style="width:100%;height:40px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:6px;font-weight:700;font-size:16px">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn ok" style="flex:1" onclick="executeWithdraw()">Confirm Transfer</button>
+      <button class="btn secondary" onclick="closeWithdrawModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// Pro Data Engine
+let isOnline = true;
+let totalBalance = 4850;
+let activeJobRef = 'JR-004';
+let currentChatJob = null;
+
+const REQUESTS = [
+  {
+    id: 'JR-001', cust: 'Priya Sharma', av: 'PS', col: '#1E293B', type: 'Quick Fix',
+    title: 'Emergency: Kitchen drain pipe burst under sink',
+    desc: 'Water pooling rapidly on kitchen floor. Joint seems separated. Need emergency fix within 30 minutes.',
+    dist: '1.2 km away · Lajpat Nagar Block C',
+    offered: 450, time: '10 min ago'
+  },
+  {
+    id: 'JR-002', cust: 'Ankit Gupta', av: 'AG', col: '#2563EB', type: 'Scheduled',
+    title: 'Dual mixer tap replacement in master bathroom',
+    desc: 'New brass mixer tap already purchased. Old fixture corroded and leaking. Scheduled for tomorrow morning.',
+    dist: '2.4 km away · Vasant Vihar',
+    offered: 500, time: '35 min ago'
+  },
+  {
+    id: 'JR-003', cust: 'Neha Kapoor', av: 'NK', col: '#7C3AED', type: 'Quick Fix',
+    title: 'Continuous toilet flush valve leakage',
+    desc: 'Internal cistern seal broken. Water keeps running continuously.',
+    dist: '3.1 km away · Saket',
+    offered: 400, time: '1 hr ago'
+  }
+];
+
+const ACTIVE_JOBS = [
+  {
+    id: 'JR-004', cust: 'Sunita Verma', av: 'SV', col: '#059669', type: 'Scheduled',
+    title: '25L Geyser Installation with Pressure Safety Valve',
+    desc: 'Customer waiting at residence. Tools and drill machine required.',
+    loc: 'Dwarka Sector 7, Flat 1204',
+    offered: 600, stage: 2, // 1: Accepted, 2: En Route, 3: In Progress, 4: Complete
+    stageLabel: 'En Route to Location'
+  }
+];
+
+const TRANSACTIONS = [
+  { ref:'TXN-901', cust:'Dinesh Rawat', title:'Main pipeline brass joint repair', date:'Yesterday', gross:500, fee:50, net:450, status:'Settled' },
+  { ref:'TXN-902', cust:'Priya Sharma', title:'Kitchen sink trap fitting', date:'3 days ago', gross:400, fee:40, net:360, status:'Settled' },
+  { ref:'TXN-903', cust:'Ankit Gupta', title:'Balcony pipeline overhaul', date:'5 days ago', gross:800, fee:80, net:720, status:'Settled' },
+  { ref:'TXN-880', cust:'Bank Payout', title:'IMPS Transfer to HDFC ****4521', date:'1 week ago', gross:0, fee:0, net:-3500, status:'Paid Out' }
+];
+
+let chatMessages = [];
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(()=> t.style.display = 'none', 3000);
+}
+
+function goView(viewId){
+  document.querySelectorAll('[data-view]').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`[data-view="${viewId}"]`);
+  if(target) target.classList.add('active');
+
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.vbtn === viewId));
+  window.scrollTo({top:0, behavior:'instant'});
+
+  if(viewId === 'dispatch') renderRequests();
+  if(viewId === 'active') renderActive();
+  if(viewId === 'earnings') renderLedger();
+}
+
+function handleAvailChange(checked){
+  isOnline = checked;
+  const pulse = document.getElementById('pulseIndicator');
+  const label = document.getElementById('statusLabel');
+  const sub = document.getElementById('statusSub');
+
+  if(isOnline){
+    pulse.className = 'live-pulse';
+    label.textContent = 'Live Dispatch: Online & Ready for Jobs';
+    sub.textContent = 'Accepting emergency Quick Fixes & scheduled visits across South Delhi';
+    toast('You are now Online. Live dispatch radar enabled.');
+  } else {
+    pulse.className = 'live-pulse offline';
+    label.textContent = 'Live Dispatch: Offline (Standby)';
+    sub.textContent = 'You will not receive new instant dispatch requests while offline';
+    toast('You are now Offline. No new dispatches will arrive.');
+  }
+}
+
+// RENDER INCOMING REQUESTS WITH 10% FEE BREAKDOWN
+function renderRequests(){
+  const container = document.getElementById('requestCards');
+  document.getElementById('reqCount').textContent = REQUESTS.length;
+  document.getElementById('pillCount').textContent = REQUESTS.length;
+
+  if(!REQUESTS.length){
+    container.innerHTML = `<div class="card" style="text-align:center;padding:40px"><p class="muted">No pending requests right now. You are ready for next dispatch.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = REQUESTS.map((r, idx)=> {
+    const fee = Math.round(r.offered * 0.10);
+    const net = r.offered - fee;
+    return `
+      <div class="card">
+        <div class="job-head">
+          <div>
+            <span class="badge ${r.type==='Quick Fix'?'urgent':'blue'}" style="margin-bottom:6px">${r.type}</span>
+            <div class="job-title">${r.title}</div>
+            <div class="job-cust">
+              <div class="cust-av" style="background:${r.col}">${r.av}</div>
+              <span style="font-weight:600;font-size:14px">${r.cust}</span>
+              <span class="muted" style="font-size:12.5px">&middot; ${r.time}</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <span class="muted" style="font-size:12px">Customer Offered</span>
+            <div style="font-size:22px;font-weight:800;color:var(--ink-900)">₹${r.offered}</div>
+          </div>
+        </div>
+
+        <p style="color:var(--ink-700);font-size:14px;margin-bottom:12px">${r.desc}</p>
+
+        <div class="job-details">
+          <div class="detail-item"><span>Location &amp; Range</span><b>📍 ${r.dist}</b></div>
+          <div class="detail-item"><span>Arrival Expectation</span><b>⚡ Within 30 minutes</b></div>
+          <div class="detail-item"><span>Materials Required</span><b>Basic tools + standard washers</b></div>
+        </div>
+
+        <!-- Professional Fee Transparency Box -->
+        <div class="payout-box">
+          <div>
+            <span>Customer Price: <strong>₹${r.offered}</strong> &middot; Platform Fee (10%): <strong>-₹${fee}</strong></span>
+          </div>
+          <div>
+            <span class="muted" style="font-size:12px;margin-right:6px">Your Net Take-Home:</span>
+            <span class="net">₹${net}</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn ok sm" onclick="acceptDispatch(${idx})">✓ Accept &amp; Dispatch</button>
+          <button class="btn secondary sm" onclick="openNegotiationChat(${idx})">💬 Negotiate in Chat</button>
+          <button class="btn secondary sm" onclick="declineDispatch(${idx})">✕ Decline</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function acceptDispatch(idx){
+  const job = REQUESTS[idx];
+  REQUESTS.splice(idx, 1);
+  ACTIVE_JOBS.unshift({
+    id: job.id, cust: job.cust, av: job.av, col: job.col, type: job.type,
+    title: job.title, desc: job.desc, loc: job.dist,
+    offered: job.offered, stage: 2, stageLabel: 'En Route to Customer'
+  });
+  toast(`Order accepted! Moving to Active Jobs. Contacting ${job.cust}...`);
+  goView('active');
+}
+
+function declineDispatch(idx){
+  REQUESTS.splice(idx, 1);
+  toast('Request declined. Dispatched to next nearest professional.');
+  renderRequests();
+}
+
+// ACTIVE JOBS WITH LIFECYCLE STEPPER
+function renderActive(){
+  const container = document.getElementById('activeCards');
+  if(!ACTIVE_JOBS.length){
+    container.innerHTML = `<div class="card" style="text-align:center;padding:48px 20px">
+      <p class="muted">No active jobs in progress.</p>
+      <button class="btn primary sm" style="margin-top:12px" onclick="goView('dispatch')">View Incoming Requests</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = ACTIVE_JOBS.map((j, idx)=> {
+    const fee = Math.round(j.offered * 0.10);
+    const net = j.offered - fee;
+    return `
+      <div class="card">
+        <div class="job-head">
+          <div>
+            <span class="badge ${j.stage===4?'ok':'amber'}" style="margin-bottom:6px">${j.stageLabel}</span>
+            <div class="job-title">${j.title}</div>
+            <div class="job-cust">
+              <div class="cust-av" style="background:${j.col}">${j.av}</div>
+              <b style="font-size:14px">${j.cust}</b>
+              <span class="muted" style="font-size:12.5px">&middot; ${j.loc}</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <span class="muted" style="font-size:12px">Net Payout (after 10%)</span>
+            <div style="font-size:22px;font-weight:800;color:var(--ok)">₹${net}</div>
+          </div>
+        </div>
+
+        <!-- 4 Stage Progress Stepper -->
+        <div class="stepper">
+          <div class="step ${j.stage>=1?'done':''}"></div>
+          <div class="step ${j.stage>=2?'done':j.stage===2?'current':''}"></div>
+          <div class="step ${j.stage>=3?'done':j.stage===3?'current':''}"></div>
+          <div class="step ${j.stage>=4?'done':''}"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-500);margin-top:-14px;margin-bottom:16px">
+          <span>1. Accepted</span>
+          <span style="font-weight:${j.stage===2?'700':'400'};color:${j.stage===2?'var(--accent)':'inherit'}">2. En Route</span>
+          <span style="font-weight:${j.stage===3?'700':'400'};color:${j.stage===3?'var(--accent)':'inherit'}">3. In Progress</span>
+          <span style="font-weight:${j.stage===4?'700':'400'};color:${j.stage===4?'var(--ok)':'inherit'}">4. Complete</span>
+        </div>
+
+        <div class="card-actions">
+          ${j.stage===2 ? `<button class="btn accent sm" onclick="advanceJobStage(${idx}, 3)">📍 Mark Arrived &amp; In Progress</button>` : ''}
+          ${j.stage===3 ? `<button class="btn ok sm" onclick="advanceJobStage(${idx}, 4)">✓ Mark Job Complete &amp; Settle</button>` : ''}
+          <button class="btn secondary sm" onclick="toast('Calling ${j.cust}...')">📞 Call Customer</button>
+          <button class="btn secondary sm" onclick="toast('Opening navigation maps...')">🗺️ GPS Directions</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function advanceJobStage(idx, newStage){
+  const j = ACTIVE_JOBS[idx];
+  j.stage = newStage;
+  if(newStage === 3){
+    j.stageLabel = 'Work In Progress at Site';
+    toast('Customer notified: You have arrived and work has begun.');
+    renderActive();
+  } else if(newStage === 4){
+    const fee = Math.round(j.offered * 0.10);
+    const net = j.offered - fee;
+    totalBalance += net;
+    TRANSACTIONS.unshift({
+      ref: 'TXN-' + Math.floor(100 + Math.random()*900),
+      cust: j.cust,
+      title: j.title,
+      date: 'Today',
+      gross: j.offered,
+      fee: fee,
+      net: net,
+      status: 'Settled'
+    });
+    ACTIVE_JOBS.splice(idx, 1);
+    document.getElementById('kpiBal').textContent = `₹${totalBalance.toLocaleString()}`;
+    document.getElementById('earnBalText').textContent = `₹${totalBalance.toLocaleString()}`;
+    toast(`🎉 Job complete! ₹${net} net payout credited (after 10% fee).`);
+    renderActive();
+  }
+}
+
+// IN-APP NEGOTIATION CHAT
+function openNegotiationChat(idx){
+  currentChatJob = REQUESTS[idx];
+  document.getElementById('chatCustName').textContent = currentChatJob.cust;
+  document.getElementById('chatCustAv').textContent = currentChatJob.av;
+  document.getElementById('chatJobTopic').textContent = `Job: ${currentChatJob.title} · Offered: ₹${currentChatJob.offered}`;
+
+  chatMessages = [
+    {who:'cust', text:`Hi, can you take up this job today? My budget is ₹${currentChatJob.offered}.`, time:'10 min ago'}
+  ];
+  renderChat();
+  renderChatReplies();
+  goView('chat');
+}
+
+function renderChat(){
+  const box = document.getElementById('chatMsgs');
+  box.innerHTML = chatMessages.map(m=>`
+    <div class="chat-msg ${m.who}">
+      <div class="bubble">${m.text}</div>
+      <div class="chat-time">${m.time}</div>
+    </div>`).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderChatReplies(){
+  const p = currentChatJob.offered;
+  const counter = Math.round(p * 1.2);
+  const replies = [
+    {text:`I can do this for ₹${counter} including spare washers`, p:counter},
+    {text:`I accept ₹${p}, on my way!`, p:p, deal:true},
+    {text:`Please confirm flat number and floor`, p:p}
+  ];
+
+  document.getElementById('chatReplies').innerHTML = replies.map((r, i)=>`
+    <button class="reply-pill ${r.deal?'deal':''}" onclick="sendQuickReply(${i})">${r.text}</button>
+  `).join('');
+}
+
+function sendQuickReply(i){
+  const p = currentChatJob.offered;
+  const counter = Math.round(p * 1.2);
+  const options = [
+    {text:`I can do this for ₹${counter} including spare washers`, reply:`Alright, ₹${counter} works. Deal confirmed!`, p:counter, deal:true},
+    {text:`I accept ₹${p}, on my way!`, reply:`Awesome! I'm home, see you soon.`, p:p, deal:true},
+    {text:`Please confirm flat number and floor`, reply:`Flat 302, 3rd Floor, Block C. Elevator is running!`, p:p}
+  ];
+
+  const opt = options[i];
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  chatMessages.push({who:'worker', text:opt.text, time});
+  renderChat();
+
+  setTimeout(()=>{
+    const repTime = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    chatMessages.push({who:'cust', text:opt.reply, time:repTime});
+    if(opt.deal){
+      currentChatJob.offered = opt.p;
+      toast(`Rate agreed at ₹${opt.p}!`);
+    }
+    renderChat();
+  }, 900);
+}
+
+function sendWorkerMsg(){
+  const inp = document.getElementById('chatInp');
+  const val = inp.value.trim();
+  if(!val) return;
+  inp.value = '';
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  chatMessages.push({who:'worker', text:val, time});
+  renderChat();
+
+  setTimeout(()=>{
+    const repTime = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    chatMessages.push({who:'cust', text:'Understood, thank you!', time:repTime});
+    renderChat();
+  }, 1000);
+}
+
+// LEDGER TABLE WITH 10% FEE
+function renderLedger(){
+  const tbody = document.getElementById('ledgerBody');
+  tbody.innerHTML = TRANSACTIONS.map(t=>`
+    <tr>
+      <td><code>${t.ref}</code></td>
+      <td><b>${t.cust}</b><br><span class="muted" style="font-size:12px">${t.title}</span></td>
+      <td>${t.date}</td>
+      <td>${t.gross ? '₹' + t.gross : '—'}</td>
+      <td style="color:var(--ink-500)">${t.fee ? '-₹' + t.fee : '—'}</td>
+      <td style="font-weight:700;color:${t.net>0?'var(--ok)':'var(--urgent)'}">${t.net>0?'+':''}₹${Math.abs(t.net)}</td>
+      <td><span class="badge ${t.status==='Settled'?'ok':'slate'}">${t.status}</span></td>
+    </tr>`).join('');
+}
+
+// WITHDRAWAL MODAL
+function openWithdrawModal(){
+  document.getElementById('withdrawAmtInp').value = totalBalance;
+  document.getElementById('withdrawModal').classList.add('open');
+}
+function closeWithdrawModal(){
+  document.getElementById('withdrawModal').classList.remove('open');
+}
+function executeWithdraw(){
+  const amt = Number(document.getElementById('withdrawAmtInp').value);
+  if(!amt || amt <= 0 || amt > totalBalance){
+    toast('Please enter a valid amount within your available balance.');
+    return;
+  }
+  totalBalance -= amt;
+  TRANSACTIONS.unshift({
+    ref: 'TXN-' + Math.floor(100 + Math.random()*900),
+    cust: 'Bank Payout',
+    title: 'IMPS Direct Transfer to HDFC ****4521',
+    date: 'Just now',
+    gross: 0, fee: 0, net: -amt, status: 'Paid Out'
+  });
+  document.getElementById('kpiBal').textContent = `₹${totalBalance.toLocaleString()}`;
+  document.getElementById('earnBalText').textContent = `₹${totalBalance.toLocaleString()}`;
+  closeWithdrawModal();
+  toast(`Transfer of ₹${amt} initiated to HDFC Bank ****4521! Expected in 15 mins.`);
+  renderLedger();
+}
+
+// Initialize on page load
+renderRequests();
+</script>
+</body>
+</html>
